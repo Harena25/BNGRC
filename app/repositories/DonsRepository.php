@@ -9,7 +9,7 @@ class DonsRepository
 
     public function create($data)
     {
-        $st = $this->pdo->prepare("INSERT INTO bn_dons(article_id, quantite_donnee, date_don, status) VALUES(?, ?, ?, 1)");
+        $st = $this->pdo->prepare("INSERT INTO bn_dons(article_id, quantite_donnee, date_don) VALUES(?, ?, ?)");
         $st->execute([(int) $data['article_id'], (int) $data['quantite_donnee'], (string) $data['date_don']]);
         return $this->pdo->lastInsertId();
     }

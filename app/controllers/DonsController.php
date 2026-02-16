@@ -50,7 +50,9 @@ class DonsController
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
-            Flight::redirect('/dons/create?error=stock_update_failed');
+            $msg = $e->getMessage();
+            error_log('Stock update failed: ' . $msg);
+            Flight::redirect('/dons/create?error=stock_update_failed&msg=' . urlencode($msg));
         }
     }
 

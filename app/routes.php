@@ -1,9 +1,15 @@
 <?php
+require_once __DIR__ . '/controllers/ArticlesController.php';
+require_once __DIR__ . '/controllers/DonsController.php';
+require_once __DIR__ . '/repositories/ArticlesRepository.php';
+require_once __DIR__ . '/repositories/DonsRepository.php';
+require_once __DIR__ . '/repositories/CategorieRepository.php';
 require_once __DIR__ . '/controllers/DistributionController.php';
 require_once __DIR__ . '/controllers/BesoinsController.php';
 require_once __DIR__ . '/controllers/VillesController.php';
 require_once __DIR__ . '/controllers/ArticlesController.php';
 
+<<<<<<< HEAD
 Flight::route('/', function () {
     Flight::redirect('/needs');
 });
@@ -28,6 +34,25 @@ Flight::route('GET /cities', function () {
     return $ctrl->index();
 });
 
+=======
+
+// Articles routes
+Flight::route('GET /articles', ['ArticlesController', 'list']);
+Flight::route('GET /articles/create', ['ArticlesController', 'showForm']);
+Flight::route('POST /articles', ['ArticlesController', 'create']);
+Flight::route('GET /articles/@id/edit', ['ArticlesController', 'editForm']);
+Flight::route('POST /articles/@id', ['ArticlesController', 'update']);
+Flight::route('POST /articles/@id/delete', ['ArticlesController', 'delete']);
+
+// Dons routes
+Flight::route('GET /dons', ['DonsController', 'list']);
+Flight::route('GET /dons/create', ['DonsController', 'showForm']);
+Flight::route('POST /dons', ['DonsController', 'create']);
+Flight::route('GET /dons/@id/edit', ['DonsController', 'editForm']);
+Flight::route('POST /dons/@id', ['DonsController', 'update']);
+Flight::route('POST /dons/@id/delete', ['DonsController', 'delete']);
+// Login routes
+>>>>>>> refs/remotes/origin/main
 
 Flight::route('GET /autoDistribution', function () {
     $ctrl = new DistributionController();

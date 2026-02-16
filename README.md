@@ -26,6 +26,13 @@ Tableau de bord affichant les villes avec leurs besoins et dons attribués.
 ### Règles de Gestion
 - Chaque besoin a un prix unitaire et une quantité
 - Prix unitaire constant
+
+### Livrables
+- Pages fonctionnelles complètes
+- Design UI/UX
+- Code source
+- Déploiement serveur ITU
+
 ----------------------------------------------------------------------------------------------------------------------------------
 (version 2)
 - Les dons en argent peuvent acheter les besoins en nature et matériaux selon les prix unitaires
@@ -37,9 +44,3 @@ Tableau de bord affichant les villes avec leurs besoins et dons attribués.
 - Page de simulation (boutons simuler et validation)
 - Page de récapitulation (actualisable en Ajax)
 ----------------------------------------------------------------------------------------------------------------------------------
-
-### Livrables
-- Pages fonctionnelles complètes
-- Design UI/UX
-- Code source
-- Déploiement serveur ITU

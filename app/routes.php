@@ -10,6 +10,7 @@ require_once __DIR__ . '/controllers/BesoinsController.php';
 require_once __DIR__ . '/controllers/VillesController.php';
 require_once __DIR__ . '/controllers/ArticlesController.php';
 require_once __DIR__ . '/controllers/DashboardController.php';
+require_once __DIR__ . '/controllers/StockController.php';
 
 Flight::route('/', function () {
     Flight::redirect('/dashboard');
@@ -63,6 +64,9 @@ Flight::route('GET /autoDistribution', function () {
 
 // Page to view distributions
 Flight::route('GET /distribution', ['DistributionController', 'list']);
+
+// Stock
+Flight::route('GET /stock', ['StockController', 'list']);
 
 
 

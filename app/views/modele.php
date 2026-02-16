@@ -290,9 +290,9 @@
             <i class="bi bi-heart-pulse-fill"></i> BNGRC
         </a>
         <div class="topbar-right">
-            <a href="/articles"><i class="bi bi-box-seam"></i> Articles</a>
+            <a href="/stock"><i class="bi bi-box-seam"></i> Stock</a>
             <a href="/dons"><i class="bi bi-gift"></i> Dons</a>
-            <a href="/autoDistribution"><i class="bi bi-truck"></i> Distribution</a>
+            <a href="/distribution"><i class="bi bi-truck"></i> Distribution</a>
         </div>
     </header>
 
@@ -316,6 +316,10 @@
                 href="/dons">
                 <i class="bi bi-gift"></i> Dons
             </a>
+            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/stock') !== false ? 'active' : ''; ?>"
+                href="/stock">
+                <i class="bi bi-box-seam"></i> Stock
+            </a>
             <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/needs/list') !== false ? 'active' : ''; ?>"
                 href="/needs/list">
                 <i class="bi bi-card-checklist"></i> Besoins
@@ -324,8 +328,8 @@
             <div class="sidebar-divider"></div>
             <div class="sidebar-header">Opérations</div>
 
-            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/autoDistribution') !== false ? 'active' : ''; ?>"
-                href="/autoDistribution">
+            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/distribution') !== false ? 'active' : ''; ?>"
+                href="/distribution">
                 <i class="bi bi-truck"></i> Distribution
             </a>
             <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/cities') !== false ? 'active' : ''; ?>"

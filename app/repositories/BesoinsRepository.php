@@ -103,4 +103,52 @@ class BesoinsRepository
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([':id' => $id]);
     }
+
+    /**
+     * Réduire la quantité restante des besoins pour une ville+article donnés après un achat.
+     * Distribue la quantité achetée sur les besoins par ordre chronologique (date_besoin, created_at).
+     * Met à jour le status_id : 2 = partiel, 3 = satisfait.
+     *
+     * @return int Quantité effectivement déduite des besoins
+     */
+    public function reduireParAchat(int $villeId, int $articleId, int $quantiteAchetee): int
+    {
+        // Récupérer les besoins non satisfaits pour cette ville+article, par ordre chronologique
+        $sql = "
+            SELECT id, quantite
+            FROM bn_besoin
+            WHERE ville_id = :ville_id
+              AND article_id = :article_id
+              AND status_id != 3
+              AND quantite > 0
+            ORDER BY date_besoin ASC, created_at ASC
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':ville_id' => $villeId, ':article_id' => $articleId]);
+        $besoins = $stmt->fetchAll();
+
+        $restant = $quantiteAchetee;
+        $totalReduit = 0;
+
+        foreach ($besoins as $besoin) {
+            if ($restant <= 0) break;
+
+            $reduction = min($restant, (int) $besoin['quantite']);
+            $nouvelleQte = (int) $besoin['quantite'] - $reduction;
+            $nouveauStatus = $nouvelleQte <= 0 ? 3 : 2; // 3=Satisfait, 2=Partiel
+
+            $updateSql = "UPDATE bn_besoin SET quantite = :quantite, status_id = :status_id WHERE id = :id";
+            $updateStmt = $this->pdo->prepare($updateSql);
+            $updateStmt->execute([
+                ':quantite' => $nouvelleQte,
+                ':status_id' => $nouveauStatus,
+                ':id' => $besoin['id'],
+            ]);
+
+            $restant -= $reduction;
+            $totalReduit += $reduction;
+        }
+
+        return $totalReduit;
+    }
 }

@@ -3,12 +3,14 @@
 require_once __DIR__ . '/../repositories/BesoinsRepository.php';
 require_once __DIR__ . '/../repositories/StockRepository.php';
 require_once __DIR__ . '/../repositories/ArticlesRepository.php';
+require_once __DIR__ . '/../repositories/AchatsRepository.php';
 
 class AchatController
 {
     private BesoinsRepository $besoinsRepo;
     private StockRepository $stockRepo;
     private ArticlesRepository $articlesRepo;
+    private AchatsRepository $achatsRepo;
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
@@ -17,6 +19,7 @@ class AchatController
         $this->besoinsRepo = new BesoinsRepository($pdo);
         $this->stockRepo = new StockRepository($pdo);
         $this->articlesRepo = new ArticlesRepository($pdo);
+        $this->achatsRepo = new AchatsRepository($pdo);
     }
 
     /**
@@ -210,8 +213,23 @@ class AchatController
             // 2. Ajouter au stock
             $this->stockRepo->addStock($besoin['article_id'], $quantite);
 
-            // 3. Enregistrer dans bn_achat (TODO: creer la table et repository)
-            // Pour l'instant on skip cette etape
+            // 3. Enregistrer dans bn_achats
+            $this->achatsRepo->create(
+                (int) $besoin['ville_id'],
+                (int) $besoin['article_id'],
+                $quantite,
+                $prixUnitaire,
+                $fraisAchat,
+                $montantTotal,
+                date('Y-m-d')
+            );
+
+            // 4. Mettre à jour le besoin (quantite restante et status)
+            $this->besoinsRepo->reduireParAchat(
+                (int) $besoin['ville_id'],
+                (int) $besoin['article_id'],
+                $quantite
+            );
 
             $this->pdo->commit();
 
@@ -351,9 +369,11 @@ class AchatController
                 
                 $achatsAPreparer[] = [
                     'besoin_id' => $besoin['id'],
+                    'ville_id' => (int) $besoin['ville_id'],
                     'article_id' => $article_id,
                     'article_nom' => $besoin['article'],
                     'quantite' => $quantite,
+                    'prix_unitaire' => $prixUnitaire,
                     'montant_total' => $montantTotal
                 ];
                 
@@ -382,6 +402,24 @@ class AchatController
                 
                 // Ajouter au stock
                 $this->stockRepo->addStock($achat['article_id'], $achat['quantite']);
+
+                // Enregistrer dans bn_achats
+                $this->achatsRepo->create(
+                    (int) $achat['ville_id'],
+                    (int) $achat['article_id'],
+                    $achat['quantite'],
+                    $achat['prix_unitaire'],
+                    $fraisAchat,
+                    $achat['montant_total'],
+                    date('Y-m-d')
+                );
+
+                // Mettre à jour les besoins (quantite restante et status)
+                $this->besoinsRepo->reduireParAchat(
+                    (int) $achat['ville_id'],
+                    (int) $achat['article_id'],
+                    $achat['quantite']
+                );
                 
                 $nbAchats++;
             }

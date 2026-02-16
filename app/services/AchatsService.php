@@ -2,11 +2,13 @@
 
 require_once __DIR__ . '/../repositories/AchatsRepository.php';
 require_once __DIR__ . '/../repositories/ArticlesRepository.php';
+require_once __DIR__ . '/../repositories/BesoinsRepository.php';
 
 class AchatsService
 {
     private AchatsRepository $achatsRepo;
     private ArticlesRepository $articlesRepo;
+    private BesoinsRepository $besoinsRepo;
     private PDO $pdo;
 
     // Frais d'achat par défaut en pourcentage
@@ -17,6 +19,7 @@ class AchatsService
         $this->pdo = $pdo;
         $this->achatsRepo = new AchatsRepository($pdo);
         $this->articlesRepo = new ArticlesRepository($pdo);
+        $this->besoinsRepo = new BesoinsRepository($pdo);
     }
 
     /**
@@ -97,6 +100,9 @@ class AchatsService
 
         // Créer l'achat
         $id = $this->achatsRepo->create($villeId, $articleId, $quantite, $prixUnitaire, $fraisPourcentage, $prixTotal, $dateAchat);
+
+        // Synchroniser : réduire les besoins restants pour cette ville+article
+        $this->besoinsRepo->reduireParAchat($villeId, $articleId, $quantite);
 
         return [
             'success' => true,

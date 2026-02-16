@@ -26,16 +26,11 @@ Flight::route('POST /dons', ['DonsController', 'create']);
 Flight::route('GET /dons/@id/edit', ['DonsController', 'editForm']);
 Flight::route('POST /dons/@id', ['DonsController', 'update']);
 Flight::route('POST /dons/@id/delete', ['DonsController', 'delete']);
-// Login routes
 
 Flight::route('GET /autoDistribution', function () {
     $ctrl = new DistributionController();
     return $ctrl->autoDistribution();
 });
-
-
-
-// Flight::route('POST /register', ['AuthController', 'postRegister']);
 
 
 

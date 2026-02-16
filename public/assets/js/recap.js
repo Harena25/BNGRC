@@ -69,6 +69,9 @@
                     </div>
                 </div>
             `;
+      // Montrer la section des totaux après chargement
+      if (recapTotals.classList.contains("d-none"))
+        recapTotals.classList.remove("d-none");
     } catch (e) {
       console.error("Erreur lors du chargement du récap:", e);
     }
@@ -93,10 +96,7 @@
   if (villeFilter)
     villeFilter.addEventListener("change", () => loadRecap(villeFilter.value));
 
-  // Initial load
-  document.addEventListener("DOMContentLoaded", () =>
-    loadRecap(villeFilter.value),
-  );
+  // Ne pas charger automatiquement au démarrage — chargement uniquement via bouton Actualiser
 
   // Expose for debugging
   window._recap = { loadRecap };

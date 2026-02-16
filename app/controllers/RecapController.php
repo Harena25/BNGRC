@@ -1,18 +1,19 @@
 <?php
+require_once __DIR__ . '/../repositories/RecapRepository.php';
+
 class RecapController
 {
 
     public static function index()
     {
         $pdo = Flight::db();
+        $repo = new RecapRepository($pdo);
 
         // Liste des villes pour le filtre
-        $stmt = $pdo->query("SELECT id, libelle FROM bn_ville ORDER BY libelle");
-        $villes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $villes = $repo->getVilles();
 
         // Données initiales (globales par ville)
-        $stmt = $pdo->query("SELECT * FROM v_recap_ville ORDER BY region_name, ville_name");
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $repo->getRecapRows();
 
         $pagename = 'dashboard/recap.php';
         Flight::render('modele', [
@@ -27,19 +28,11 @@ class RecapController
     {
         header('Content-Type: application/json');
         $pdo = Flight::db();
+        $repo = new RecapRepository($pdo);
 
         $ville_id = isset($_GET['ville_id']) && is_numeric($_GET['ville_id']) ? (int) $_GET['ville_id'] : null;
 
-        if ($ville_id) {
-            $sql = "SELECT * FROM v_recap_ville WHERE ville_id = :vid";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([':vid' => $ville_id]);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            $sql = "SELECT * FROM v_recap_ville ORDER BY region_name, ville_name";
-            $stmt = $pdo->query($sql);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
+        $rows = $repo->getRecapRows($ville_id);
 
         // Calculer totaux globaux (incluant dons distribués et achats)
         $totals = [

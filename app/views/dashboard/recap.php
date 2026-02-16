@@ -12,8 +12,8 @@
         </div>
     </div>
 
-    <div id="recapTotals" class="mb-3">
-        <!-- Totaux chargés par AJAX -->
+    <div id="recapTotals" class="mb-3 d-none">
+        <!-- Totaux chargés par AJAX (masqué jusqu'à actualisation) -->
     </div>
 
     <div class="table-responsive">

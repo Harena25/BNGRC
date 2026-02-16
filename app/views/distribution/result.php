@@ -120,6 +120,27 @@ $totalProcessed = $totalSatisfied + $totalPartial + $totalSkipped;
     </div>
     
     <!-- Actions -->
+    <?php if (isset($mode) && $mode === 'simulate'): ?>
+    <!-- Simulation mode: show Annuler/Valider buttons -->
+    <div class="alert alert-warning mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Mode simulation:</strong> Aucune modification n'a ete effectuee dans la base de donnees.
+        Cliquez sur <strong>Valider</strong> pour executer reellement la distribution.
+    </div>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="/dashboard" class="btn btn-outline-secondary btn-lg">
+            <i class="bi bi-x-circle me-2"></i>Annuler
+        </a>
+        <a href="/autoDistribution?mode=execute" class="btn btn-success btn-lg" onclick="return confirm('Confirmer l execution de la distribution automatique ?\n\nCette action va modifier la base de donnees.')">
+            <i class="bi bi-check-circle-fill me-2"></i>Valider la distribution
+        </a>
+    </div>
+    <?php else: ?>
+    <!-- Execution mode: show normal navigation -->
+    <div class="alert alert-success mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Distribution executee avec succes!</strong> Les modifications ont ete enregistrees dans la base de donnees.
+    </div>
     <div class="d-flex justify-content-center gap-3">
         <a href="/dashboard" class="btn btn-primary btn-lg">
             <i class="bi bi-speedometer2 me-2"></i>Retour au tableau de bord
@@ -128,5 +149,6 @@ $totalProcessed = $totalSatisfied + $totalPartial + $totalSkipped;
             <i class="bi bi-table me-2"></i>Voir toutes les distributions
         </a>
     </div>
+    <?php endif; ?>
     
 </div>

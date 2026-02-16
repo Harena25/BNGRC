@@ -5,7 +5,7 @@ $stats = $stats ?? ['total' => 0, 'quantite' => 0, 'valeur' => 0];
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0"><i class="bi bi-clock-history me-2"></i>Historique des distributions</h2>
-    <a href="/distribution/auto" class="btn btn-primary">
+    <a href="/autoDistribution?mode=simulate" class="btn btn-primary">
         <i class="bi bi-play-fill me-1"></i>Nouvelle allocation
     </a>
 </div>

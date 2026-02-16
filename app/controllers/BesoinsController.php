@@ -44,6 +44,17 @@ class BesoinsController
 		]);
 	}
 
+	public function besoinsRestants()
+	{
+		$pagename = 'besoins/besoin_restant.php';
+		// Recuperer seulement les besoins avec status_id != 3 (non satisfaits)
+		$besoins = $this->besoinsRepo->getBesoinsRestants();
+		Flight::render('modele', [
+			'besoins' => $besoins,
+			'pagename' => $pagename,
+		]);
+	}
+
 	public function store()
 	{
 		$data = Flight::request()->data;

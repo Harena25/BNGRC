@@ -25,6 +25,63 @@ class AutoDistributor {
         }
     }
 
+    // Simulate distribution without modifying database
+    public function simulate(): array {
+        $log = [];
+        try {
+            $besoins = $this->getPendingBesoins();
+            
+            // Get all stock in memory
+            $stocks = $this->getAllStocks();
+            
+            foreach ($besoins as $besoin) {
+                $this->simulateAllocateForBesoin($besoin, $stocks, $log);
+            }
+            
+            $log[] = 'Simulation terminee (aucune modification effectuee).';
+            return $log;
+        } catch (Exception $e) {
+            $log[] = 'Error: ' . $e->getMessage();
+            return $log;
+        }
+    }
+
+    // Get all stocks in memory for simulation
+    private function getAllStocks(): array {
+        $sql = "SELECT article_id, quantite_stock FROM bn_stock";
+        $stmt = $this->pdo->query($sql);
+        $stocks = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $stocks[$row['article_id']] = (int)$row['quantite_stock'];
+        }
+        return $stocks;
+    }
+
+    // Simulate allocation without DB changes
+    private function simulateAllocateForBesoin(array $besoin, array &$stocks, array &$log) {
+        $needed = (int)$besoin['quantite'];
+        $article_id = (int)$besoin['article_id'];
+        $besoin_id = (int)$besoin['id'];
+
+        $available = isset($stocks[$article_id]) ? $stocks[$article_id] : 0;
+
+        if ($available <= 0) {
+            $log[] = "Besoin #{$besoin_id} (article {$article_id}): pas de stock disponible.";
+            return;
+        }
+
+        if ($available >= $needed) {
+            // fully satisfy
+            $stocks[$article_id] -= $needed;
+            $log[] = "Besoin #{$besoin_id}: satisfait totalement ({$needed}).";
+        } else {
+            // partial
+            $stocks[$article_id] = 0;
+            $remaining = $needed - $available;
+            $log[] = "Besoin #{$besoin_id}: partiellement satisfait ({$available}), reste {$remaining}.";
+        }
+    }
+
     // Small helper: fetch pending besoins ordered
     private function getPendingBesoins(): array {
         $sql = "SELECT * FROM bn_besoin WHERE status_id <> 3 ORDER BY date_besoin ASC, created_at ASC";

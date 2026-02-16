@@ -4,12 +4,23 @@ require_once __DIR__ . '/../services/AutoDistributor.php';
 class DistributionController{
     
     /**
-     * Run automatic distribution and redirect to result page
+     * Run automatic distribution (simulate or execute)
      */
     public function autoDistribution(){
         $pdo = Flight::db();
         $distributor = new AutoDistributor($pdo);
-        $log = $distributor->run();
+        
+        // Get mode from query parameter (default: simulate)
+        $mode = $_GET['mode'] ?? 'simulate';
+        
+        // Run simulation or execution
+        if ($mode === 'execute') {
+            // Actually execute the distribution
+            $log = $distributor->run();
+        } else {
+            // Simulate only (don't modify database)
+            $log = $distributor->simulate();
+        }
         
         // Calculate summary
         $summary = ['satisfied' => 0, 'partial' => 0, 'skipped' => 0];
@@ -30,6 +41,7 @@ class DistributionController{
         $_SESSION['allocation_log'] = $log;
         $_SESSION['allocation_summary'] = $summary;
         $_SESSION['allocation_time'] = date('Y-m-d H:i:s');
+        $_SESSION['allocation_mode'] = $mode;
         
         // Redirect to result page
         Flight::redirect('/distribution/result');
@@ -52,14 +64,18 @@ class DistributionController{
         
         $log = $_SESSION['allocation_log'];
         $summary = $_SESSION['allocation_summary'] ?? ['satisfied' => 0, 'partial' => 0, 'skipped' => 0];
+        $mode = $_SESSION['allocation_mode'] ?? 'simulate';
         
-        // Clear session data after reading
-        unset($_SESSION['allocation_log'], $_SESSION['allocation_summary'], $_SESSION['allocation_time']);
+        // Clear session data only if execution completed
+        if ($mode === 'execute') {
+            unset($_SESSION['allocation_log'], $_SESSION['allocation_summary'], $_SESSION['allocation_time'], $_SESSION['allocation_mode']);
+        }
         
         $pagename = 'distribution/result.php';
         Flight::render('modele', [
             'log' => $log,
             'summary' => $summary,
+            'mode' => $mode,
             'pagename' => $pagename
         ]);
     }

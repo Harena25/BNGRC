@@ -82,7 +82,7 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <span><i class="bi bi-bar-chart-fill me-2"></i>Tableau de bord par ville</span>
-        <a href="/autoDistribution" class="btn btn-sm btn-light" onclick="return confirm('Lancer l\'allocation automatique ?\n\nCette action va distribuer le stock disponible aux besoins en attente.');">
+        <a href="/autoDistribution?mode=simulate" class="btn btn-sm btn-light">
             <i class="bi bi-lightning-fill"></i> Lancer allocation
         </a>
     </div>

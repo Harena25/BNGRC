@@ -55,6 +55,10 @@
                 href="/needs/list">
                 <i class="bi bi-card-checklist"></i> Besoins
             </a>
+            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/needs/restants') !== false ? 'active' : ''; ?>"
+                href="/needs/restants">
+                <i class="bi bi-exclamation-triangle-fill"></i> Besoins restants
+            </a>
             <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/purchases') !== false ? 'active' : ''; ?>"
                 href="/purchases/list">
                 <i class="bi bi-cart3"></i> Achats

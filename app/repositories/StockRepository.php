@@ -33,4 +33,40 @@ class StockRepository
         $st = $this->pdo->prepare("INSERT INTO bn_stock(article_id, quantite_stock) VALUES(?, ?)");
         $st->execute([(int) $articleId, (int) $delta]);
     }
+
+    /**
+     * Verifier si un article existe en stock (quantite > 0)
+     */
+    public function hasStock($articleId)
+    {
+        $stock = $this->findByArticleId($articleId);
+        return $stock && ($stock['quantite_stock'] ?? 0) > 0;
+    }
+
+    /**
+     * Recuperer le solde argent (article_id = 8)
+     */
+    public function getSoldeArgent()
+    {
+        $stock = $this->findByArticleId(8);
+        return $stock ? (int) $stock['quantite_stock'] : 0;
+    }
+
+    /**
+     * Debiter l'argent (article_id = 8)
+     */
+    public function debitArgent($montant)
+    {
+        $st = $this->pdo->prepare("UPDATE bn_stock SET quantite_stock = quantite_stock - ? WHERE article_id = 8");
+        return $st->execute([(float) $montant]);
+    }
+
+    /**
+     * Ajouter du stock pour un article (INSERT ou UPDATE)
+     */
+    public function addStock($articleId, $quantite)
+    {
+        $this->upsertQuantity($articleId, $quantite);
+        return true;
+    }
 }

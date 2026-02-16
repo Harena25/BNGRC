@@ -12,6 +12,7 @@ require_once __DIR__ . '/controllers/ArticlesController.php';
 require_once __DIR__ . '/controllers/DashboardController.php';
 require_once __DIR__ . '/controllers/StockController.php';
 require_once __DIR__ . '/controllers/AchatsController.php';
+require_once __DIR__ . '/controllers/AchatController.php';
 
 Flight::route('/', function () {
     Flight::redirect('/dashboard');
@@ -28,6 +29,11 @@ Flight::route('GET /needs', function () {
 Flight::route('GET /needs/list', function () {
     $ctrl = new BesoinsController(Flight::db());
     return $ctrl->listPage();
+});
+
+Flight::route('GET /needs/restants', function () {
+    $ctrl = new BesoinsController(Flight::db());
+    return $ctrl->besoinsRestants();
 });
 
 Flight::route('POST /needs', function () {
@@ -86,6 +92,32 @@ Flight::route('GET /purchases/list', function () {
 Flight::route('POST /purchases', function () {
     $ctrl = new AchatsController(Flight::db());
     return $ctrl->store();
+});
+
+// Achats - Nouveau systeme
+Flight::route('GET /achats/form/@besoin_id', function ($besoin_id) {
+    $ctrl = new AchatController(Flight::db());
+    return $ctrl->form($besoin_id);
+});
+
+Flight::route('POST /achats/simuler', function () {
+    $ctrl = new AchatController(Flight::db());
+    return $ctrl->simuler();
+});
+
+Flight::route('POST /achats/valider', function () {
+    $ctrl = new AchatController(Flight::db());
+    return $ctrl->valider();
+});
+
+Flight::route('GET /achats/simuler-global', function () {
+    $ctrl = new AchatController(Flight::db());
+    return $ctrl->simulerGlobal();
+});
+
+Flight::route('POST /achats/valider-global', function () {
+    $ctrl = new AchatController(Flight::db());
+    return $ctrl->validerGlobal();
 });
 
 

@@ -26,6 +26,25 @@ class BesoinsRepository
         return $stmt->fetchAll();
     }
 
+    public function getBesoinsRestants(): array
+    {
+        $sql = "
+            SELECT b.id,b.ville_id,v.libelle AS ville,v.region_id,r.libelle AS region,b.article_id,a.libelle AS article,a.prix_unitaire,c.id AS categorie_id,c.libelle AS categorie,b.quantite,b.quantite_initiale,b.date_besoin,b.status_id,s.libelle AS status,b.created_at
+            FROM bn_besoin b
+            JOIN bn_ville v ON v.id = b.ville_id
+            JOIN bn_region r ON r.id = v.region_id
+            JOIN bn_article a ON a.id = b.article_id
+            JOIN bn_categorie c ON c.id = a.categorie_id
+            JOIN bn_status s ON s.id = b.status_id
+            WHERE b.status_id != 3
+            ORDER BY b.date_besoin ASC, b.created_at ASC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function getById(int $id): ?array
     {
         $sql = "SELECT * FROM bn_besoin WHERE id = :id";

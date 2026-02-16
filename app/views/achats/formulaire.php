@@ -28,7 +28,7 @@
                         Seules les villes avec des besoins restants sont affichées. Le stock existant est pris en compte.
                     </div>
 
-                    <form action="/purchases" method="POST">
+                    <form action="<?php echo BASE_PATH; ?>/purchases" method="POST">
 
                         <!-- Ville (seulement celles avec besoins restants) -->
                         <div class="mb-3">
@@ -122,7 +122,7 @@
 
                         <!-- Boutons -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="/purchases/list" class="btn btn-secondary">
+                            <a href=\"<?php echo BASE_PATH; ?>/purchases/list\" class=\"btn btn-secondary\">
                                 <i class="bi bi-arrow-left"></i> Liste des achats
                             </a>
                             <button type="submit" class="btn btn-primary" id="btnSubmit">
@@ -168,7 +168,8 @@
             return;
         }
 
-        fetch('/purchases/articles?ville_id=' + villeId)
+        const basePath = '<?php echo BASE_PATH; ?>';
+        fetch(basePath + '/purchases/articles?ville_id=' + villeId)
             .then(r => r.json())
             .then(data => {
                 articlesData = data;

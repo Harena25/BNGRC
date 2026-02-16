@@ -4,7 +4,7 @@
             <!-- En-tête avec titre et bouton d'ajout -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">Liste des besoins</h2>
-                <a href="/needs" class="btn btn-primary">
+                <a href="<?php echo BASE_PATH; ?>/needs" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Nouveau besoin
                 </a>
             </div>
@@ -16,7 +16,7 @@
                         <div class="text-center py-5">
                             <i class="bi bi-card-checklist" style="font-size: 3rem; color: #ccc;"></i>
                             <p class="text-muted mt-3">Aucun besoin enregistré pour le moment.</p>
-                            <a href="/needs" class="btn btn-primary mt-2">
+                            <a href="<?php echo BASE_PATH; ?>/needs" class="btn btn-primary mt-2">
                                 <i class="bi bi-plus-circle"></i> Ajouter le premier besoin
                             </a>
                         </div>
@@ -37,14 +37,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($besoins as $b): 
+                                    <?php foreach ($besoins as $b):
                                         $qteInit = $b['quantite_initiale'] ?? $b['quantite'];
                                         $qteReste = $b['quantite'];
                                         $statusClass = 'secondary';
-                                        if (($b['status_id'] ?? 1) == 3) $statusClass = 'success';
-                                        elseif (($b['status_id'] ?? 1) == 2) $statusClass = 'warning';
-                                        elseif (($b['status_id'] ?? 1) == 1) $statusClass = 'danger';
-                                    ?>
+                                        if (($b['status_id'] ?? 1) == 3)
+                                            $statusClass = 'success';
+                                        elseif (($b['status_id'] ?? 1) == 2)
+                                            $statusClass = 'warning';
+                                        elseif (($b['status_id'] ?? 1) == 1)
+                                            $statusClass = 'danger';
+                                        ?>
                                         <tr>
                                             <td><?php echo htmlspecialchars($b['id']); ?></td>
                                             <td><?php echo htmlspecialchars($b['date_besoin'] ?? ''); ?></td>
@@ -96,4 +99,3 @@
         </div>
     </div>
 </div>
-

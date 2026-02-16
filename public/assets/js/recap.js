@@ -5,7 +5,9 @@
   const recapTableBody = document.querySelector("#recapTable tbody");
 
   async function loadRecap(villeId) {
-    const url = "/recap/data" + (villeId ? "?ville_id=" + villeId : "");
+    const basePath = document.querySelector("base")?.getAttribute("href") || "";
+    const url =
+      basePath + "/recap/data" + (villeId ? "?ville_id=" + villeId : "");
 
     // Add loading state
     if (refreshBtn) {

@@ -2,22 +2,22 @@
 // Variables: $cities, $besoinsByCity, $distributionsByCity, $stats, $recentBesoins, $recentDons
 ?>
 
-<?php 
+<?php
 // Show allocation result if just ran
-if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SESSION['allocation_log'])): 
+if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SESSION['allocation_log'])):
     $log = $_SESSION['allocation_log'];
     unset($_SESSION['allocation_log'], $_SESSION['allocation_success']);
-?>
-<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-    <h5 class="alert-heading"><i class="bi bi-check-circle-fill me-2"></i>Allocation terminée</h5>
-    <hr>
-    <ul class="mb-0 small">
-    <?php foreach ($log as $line): ?>
-        <li><?php echo htmlspecialchars($line); ?></li>
-    <?php endforeach; ?>
-    </ul>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+    ?>
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <h5 class="alert-heading"><i class="bi bi-check-circle-fill me-2"></i>Allocation terminée</h5>
+        <hr>
+        <ul class="mb-0 small">
+            <?php foreach ($log as $line): ?>
+                <li><?php echo htmlspecialchars($line); ?></li>
+            <?php endforeach; ?>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 <?php endif; ?>
 
 <!-- ═══ STATS CARDS ═══ -->
@@ -82,7 +82,7 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <span><i class="bi bi-bar-chart-fill me-2"></i>Tableau de bord par ville</span>
-        <a href="/autoDistribution?mode=simulate" class="btn btn-sm btn-light">
+        <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate" class="btn btn-sm btn-light">
             <i class="bi bi-lightning-fill"></i> Lancer allocation
         </a>
     </div>
@@ -105,60 +105,60 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($villeResume as $v): 
-                    $couverture = $v['pourcentage_couverture'] ?? 0;
-                    $progressColor = ($couverture >= 80) ? 'success' : (($couverture >= 40) ? 'warning' : 'danger');
-                ?>
-                    <tr>
-                        <td><span class="badge bg-info"><?php echo htmlspecialchars($v['region_name'] ?? '-'); ?></span></td>
-                        <td><strong><?php echo htmlspecialchars($v['ville_name']); ?></strong></td>
-                        <td class="text-center"><?php echo $v['nb_besoins'] ?? 0; ?></td>
-                        <td class="text-center">
-                            <?php if (($v['nb_ouverts'] ?? 0) > 0): ?>
-                                <span class="badge bg-warning text-dark"><?php echo $v['nb_ouverts']; ?></span>
-                            <?php else: ?>
-                                <span class="text-muted">-</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="text-center">
-                            <?php if (($v['nb_partiels'] ?? 0) > 0): ?>
-                                <span class="badge" style="background:#ffc107;color:#5a3a44;"><?php echo $v['nb_partiels']; ?></span>
-                            <?php else: ?>
-                                <span class="text-muted">-</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="text-center">
-                            <?php if (($v['nb_satisfaits'] ?? 0) > 0): ?>
-                                <span class="badge bg-success"><?php echo $v['nb_satisfaits']; ?></span>
-                            <?php else: ?>
-                                <span class="text-muted">-</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="text-end"><?php echo number_format($v['qte_besoin_total'] ?? 0, 0, ',', ' '); ?></td>
-                        <td class="text-center"><?php echo $v['nb_distributions'] ?? 0; ?></td>
-                        <td class="text-end"><?php echo number_format($v['qte_distribuee_total'] ?? 0, 0, ',', ' '); ?></td>
-                        <td class="text-end">
-                            <?php $reste = $v['qte_reste'] ?? 0; ?>
-                            <?php if ($reste > 0): ?>
-                                <span class="text-danger fw-bold"><?php echo number_format($reste, 0, ',', ' '); ?></span>
-                            <?php else: ?>
-                                <span class="text-success"><i class="bi bi-check-circle"></i> 0</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <div class="progress" style="height: 20px; min-width: 80px;">
-                                <div class="progress-bar bg-<?php echo $progressColor; ?>" 
-                                     role="progressbar" 
-                                     style="width: <?php echo min($couverture, 100); ?>%;"
-                                     aria-valuenow="<?php echo $couverture; ?>" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="100">
-                                    <?php echo $couverture; ?>%
+                    <?php foreach ($villeResume as $v):
+                        $couverture = $v['pourcentage_couverture'] ?? 0;
+                        $progressColor = ($couverture >= 80) ? 'success' : (($couverture >= 40) ? 'warning' : 'danger');
+                        ?>
+                        <tr>
+                            <td><span class="badge bg-info"><?php echo htmlspecialchars($v['region_name'] ?? '-'); ?></span>
+                            </td>
+                            <td><strong><?php echo htmlspecialchars($v['ville_name']); ?></strong></td>
+                            <td class="text-center"><?php echo $v['nb_besoins'] ?? 0; ?></td>
+                            <td class="text-center">
+                                <?php if (($v['nb_ouverts'] ?? 0) > 0): ?>
+                                    <span class="badge bg-warning text-dark"><?php echo $v['nb_ouverts']; ?></span>
+                                <?php else: ?>
+                                    <span class="text-muted">-</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center">
+                                <?php if (($v['nb_partiels'] ?? 0) > 0): ?>
+                                    <span class="badge"
+                                        style="background:#ffc107;color:#5a3a44;"><?php echo $v['nb_partiels']; ?></span>
+                                <?php else: ?>
+                                    <span class="text-muted">-</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center">
+                                <?php if (($v['nb_satisfaits'] ?? 0) > 0): ?>
+                                    <span class="badge bg-success"><?php echo $v['nb_satisfaits']; ?></span>
+                                <?php else: ?>
+                                    <span class="text-muted">-</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-end"><?php echo number_format($v['qte_besoin_total'] ?? 0, 0, ',', ' '); ?></td>
+                            <td class="text-center"><?php echo $v['nb_distributions'] ?? 0; ?></td>
+                            <td class="text-end"><?php echo number_format($v['qte_distribuee_total'] ?? 0, 0, ',', ' '); ?>
+                            </td>
+                            <td class="text-end">
+                                <?php $reste = $v['qte_reste'] ?? 0; ?>
+                                <?php if ($reste > 0): ?>
+                                    <span class="text-danger fw-bold"><?php echo number_format($reste, 0, ',', ' '); ?></span>
+                                <?php else: ?>
+                                    <span class="text-success"><i class="bi bi-check-circle"></i> 0</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 20px; min-width: 80px;">
+                                    <div class="progress-bar bg-<?php echo $progressColor; ?>" role="progressbar"
+                                        style="width: <?php echo min($couverture, 100); ?>%;"
+                                        aria-valuenow="<?php echo $couverture; ?>" aria-valuemin="0" aria-valuemax="100">
+                                        <?php echo $couverture; ?>%
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -178,32 +178,38 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
                     <div class="p-3 text-muted">Aucun besoin enregistré.</div>
                 <?php else: ?>
                     <ul class="list-group list-group-flush">
-                    <?php foreach ($recentBesoins as $rb): ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-semibold"><?php echo htmlspecialchars($rb['article_name'] ?? ''); ?></span>
-                                <small class="text-muted ms-2">(<?php echo htmlspecialchars($rb['ville_name'] ?? ''); ?>)</small>
-                                <br>
-                                <small class="text-muted">Qté: <?php echo $rb['quantite']; ?> &bull; <?php echo $rb['date_besoin']; ?></small>
-                            </div>
-                            <?php 
-                            $statusClass = 'secondary';
-                            if ($rb['status_id'] == 1) $statusClass = 'warning';
-                            elseif ($rb['status_id'] == 2) $statusClass = 'info';
-                            elseif ($rb['status_id'] == 3) $statusClass = 'success';
-                            ?>
-                            <span class="badge bg-<?php echo $statusClass; ?>"><?php echo htmlspecialchars($rb['status_name'] ?? ''); ?></span>
-                        </li>
-                    <?php endforeach; ?>
+                        <?php foreach ($recentBesoins as $rb): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-semibold"><?php echo htmlspecialchars($rb['article_name'] ?? ''); ?></span>
+                                    <small
+                                        class="text-muted ms-2">(<?php echo htmlspecialchars($rb['ville_name'] ?? ''); ?>)</small>
+                                    <br>
+                                    <small class="text-muted">Qté: <?php echo $rb['quantite']; ?> &bull;
+                                        <?php echo $rb['date_besoin']; ?></small>
+                                </div>
+                                <?php
+                                $statusClass = 'secondary';
+                                if ($rb['status_id'] == 1)
+                                    $statusClass = 'warning';
+                                elseif ($rb['status_id'] == 2)
+                                    $statusClass = 'info';
+                                elseif ($rb['status_id'] == 3)
+                                    $statusClass = 'success';
+                                ?>
+                                <span
+                                    class="badge bg-<?php echo $statusClass; ?>"><?php echo htmlspecialchars($rb['status_name'] ?? ''); ?></span>
+                            </li>
+                        <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
             </div>
             <div class="card-footer text-end">
-                <a href="/needs/list" class="btn btn-sm btn-outline-primary">Voir tous</a>
+                <a href="<?php echo BASE_PATH; ?>/needs/list" class="btn btn-sm btn-outline-primary">Voir tous</a>
             </div>
         </div>
     </div>
-    
+
     <!-- Recent Dons -->
     <div class="col-lg-6">
         <div class="card shadow-sm h-100">
@@ -215,21 +221,22 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
                     <div class="p-3 text-muted">Aucun don enregistré.</div>
                 <?php else: ?>
                     <ul class="list-group list-group-flush">
-                    <?php foreach ($recentDons as $rd): ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-semibold"><?php echo htmlspecialchars($rd['article_name'] ?? ''); ?></span>
-                                <br>
-                                <small class="text-muted">Qté: <?php echo $rd['quantite_donnee']; ?> &bull; <?php echo $rd['date_don']; ?></small>
-                            </div>
-                            <span class="badge bg-success"><i class="bi bi-check2"></i> Reçu</span>
-                        </li>
-                    <?php endforeach; ?>
+                        <?php foreach ($recentDons as $rd): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-semibold"><?php echo htmlspecialchars($rd['article_name'] ?? ''); ?></span>
+                                    <br>
+                                    <small class="text-muted">Qté: <?php echo $rd['quantite_donnee']; ?> &bull;
+                                        <?php echo $rd['date_don']; ?></small>
+                                </div>
+                                <span class="badge bg-success"><i class="bi bi-check2"></i> Reçu</span>
+                            </li>
+                        <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
             </div>
             <div class="card-footer text-end">
-                <a href="/dons" class="btn btn-sm btn-outline-primary">Voir tous</a>
+                <a href="<?php echo BASE_PATH; ?>/dons" class="btn btn-sm btn-outline-primary">Voir tous</a>
             </div>
         </div>
     </div>

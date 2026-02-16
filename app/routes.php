@@ -65,6 +65,9 @@ Flight::route('GET /autoDistribution', function () {
 // Page to view distributions
 Flight::route('GET /distribution', ['DistributionController', 'list']);
 
+// Result page after allocation (hidden from navigation)
+Flight::route('GET /distribution/result', ['DistributionController', 'showResult']);
+
 // Stock
 Flight::route('GET /stock', ['StockController', 'list']);
 

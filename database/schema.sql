@@ -1,11 +1,17 @@
 CREATE DATABASE IF NOT EXIST bngrc;
 USE bngrc;
 
+CREATE TABLE IF NOT EXISTS categorie (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS article (
     id INT AUTO_INCREMENT PRIMARY KEY,
     libelle VARCHAR(255) NOT NULL,
     cat_article VARCHAR(255) NOT NULL,
     prix_unitaire DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (cat_article) REFERENCES categorie(id)
 ); 
 
 CREATE TABLE IF NOT EXISTS besoin (
@@ -15,6 +21,7 @@ CREATE TABLE IF NOT EXISTS besoin (
     quantite INT NOT NULL,
     date_besoin DATE NOT NULL,
     status_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (article_id) REFERENCES article(id),
     FOREIGN KEY (ville_id) REFERENCES ville(id),
     FOREIGN KEY (status_id) REFERENCES status(id)

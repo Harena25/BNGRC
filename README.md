@@ -33,3 +33,14 @@ Tableau de bord affichant les villes avec leurs besoins et dons attribués.
 - Code source
 - Déploiement serveur ITU
 
+----------------------------------------------------------------------------------------------------------------------------------
+(version 2)
+- Les dons en argent peuvent acheter les besoins en nature et matériaux selon les prix unitaires
+- Frais d'achat de x% configurable (ex: 100 + 10% = 110)
+- Message d'erreur si l'achat existe dans les dons restants
+
+### Pages Requises
+- Saisie et liste des achats filtrables par ville
+- Page de simulation (boutons simuler et validation)
+- Page de récapitulation (actualisable en Ajax)
+----------------------------------------------------------------------------------------------------------------------------------

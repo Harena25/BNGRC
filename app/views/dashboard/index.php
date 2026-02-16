@@ -2,6 +2,24 @@
 // Variables: $cities, $besoinsByCity, $distributionsByCity, $stats, $recentBesoins, $recentDons
 ?>
 
+<?php 
+// Show allocation result if just ran
+if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SESSION['allocation_log'])): 
+    $log = $_SESSION['allocation_log'];
+    unset($_SESSION['allocation_log'], $_SESSION['allocation_success']);
+?>
+<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+    <h5 class="alert-heading"><i class="bi bi-check-circle-fill me-2"></i>Allocation terminée</h5>
+    <hr>
+    <ul class="mb-0 small">
+    <?php foreach ($log as $line): ?>
+        <li><?php echo htmlspecialchars($line); ?></li>
+    <?php endforeach; ?>
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<?php endif; ?>
+
 <!-- ═══ STATS CARDS ═══ -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-4 col-lg-2">
@@ -64,7 +82,9 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <span><i class="bi bi-bar-chart-fill me-2"></i>Tableau de bord par ville</span>
-        <a href="/autoDistribution" class="btn btn-sm btn-light"><i class="bi bi-lightning-fill"></i> Lancer allocation</a>
+        <a href="/autoDistribution" class="btn btn-sm btn-light" onclick="return confirm('Lancer l\'allocation automatique ?\n\nCette action va distribuer le stock disponible aux besoins en attente.');">
+            <i class="bi bi-lightning-fill"></i> Lancer allocation
+        </a>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

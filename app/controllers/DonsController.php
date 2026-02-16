@@ -26,6 +26,7 @@ class DonsController
     {
         $pdo = Flight::db();
         $repo = new DonsRepository($pdo);
+        $stockRepo = new StockRepository($pdo);
 
         $data = [
             'article_id' => $_POST['article_id'] ?? 0,
@@ -39,8 +40,18 @@ class DonsController
             return;
         }
 
-        $id = $repo->create($data);
-        Flight::redirect('/dons?success=don_enregistre');
+        try {
+            $pdo->beginTransaction();
+            $repo->create($data);
+            $stockRepo->upsertQuantity($data['article_id'], $data['quantite_donnee']);
+            $pdo->commit();
+            Flight::redirect('/dons?success=don_enregistre');
+        } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            Flight::redirect('/dons/create?error=stock_update_failed');
+        }
     }
 
     public static function update($id)

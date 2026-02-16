@@ -20,7 +20,7 @@ class BesoinsController
 	public function index()
 	{
 		$villes   = $this->villesRepo->getAll();
-		$articles = $this->articlesRepo->getAll();
+		$articles = $this->articlesRepo->findAll();
 		$success  = isset($_SESSION['flash_success']) ? $_SESSION['flash_success'] : null;
 		unset($_SESSION['flash_success']);
 
@@ -53,7 +53,7 @@ class BesoinsController
 
 		if ($villeId <= 0 || $articleId <= 0 || $quantite <= 0 || $dateBesoin === '' || $statusId <= 0) {
 			$villes   = $this->villesRepo->getAll();
-			$articles = $this->articlesRepo->getAll();
+			$articles = $this->articlesRepo->findAll();
 			Flight::render('besoins/formulaire.php', [
 				'villes'   => $villes,
 				'articles' => $articles,

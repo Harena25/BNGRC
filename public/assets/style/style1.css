@@ -185,7 +185,83 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
+/* Accordion Styles */
+.sidebar .accordion-button {
+    color: var(--vibrant-3);
+}
 
+.sidebar .accordion-button i {
+    background: linear-gradient(135deg, var(--vibrant-3), var(--vibrant-4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar .accordion-button:not(.collapsed) {
+    background: rgba(232, 76, 137, .08);
+    color: var(--vibrant-2);
+}
+
+.sidebar .accordion-button:not(.collapsed) i {
+    background: linear-gradient(135deg, var(--vibrant-2), var(--vibrant-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar .accordion-button:hover {
+    background: rgba(232, 76, 137, .05);
+    color: var(--vibrant-2);
+}
+
+.sidebar .accordion-button:hover i {
+    background: linear-gradient(135deg, var(--vibrant-2), var(--vibrant-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar .accordion-body {
+    background: rgba(196, 78, 159, .03);
+}
+
+.sidebar .accordion-body .nav-link {
+    color: var(--vibrant-3);
+}
+
+.sidebar .accordion-body .nav-link i {
+    background: linear-gradient(135deg, var(--vibrant-3), var(--vibrant-4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar .accordion-body .nav-link:hover {
+    background: rgba(232, 76, 137, .08);
+    border-left-color: var(--vibrant-2);
+    color: var(--vibrant-3);
+}
+
+.sidebar .accordion-body .nav-link:hover i {
+    background: linear-gradient(135deg, var(--vibrant-2), var(--vibrant-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar .accordion-body .nav-link.active {
+    background: linear-gradient(90deg, rgba(232, 76, 137, .12), rgba(196, 78, 159, .08));
+    border-left-color: var(--vibrant-2);
+    color: var(--vibrant-3);
+    box-shadow: inset -2px 0 0 var(--vibrant-2);
+}
+
+.sidebar .accordion-body .nav-link.active i {
+    background: linear-gradient(135deg, var(--vibrant-1), var(--vibrant-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
 .sidebar-divider {
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--vibrant-3), transparent);

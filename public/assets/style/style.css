@@ -143,6 +143,65 @@ body {
     color: var(--bonbon-4);
 }
 
+/* Accordion Styles */
+.sidebar .accordion-button {
+    color: var(--bonbon-4);
+}
+
+.sidebar .accordion-button i {
+    color: var(--bonbon-3);
+}
+
+.sidebar .accordion-button:not(.collapsed) {
+    background: var(--bonbon-1);
+    color: var(--bonbon-5);
+}
+
+.sidebar .accordion-button:not(.collapsed) i {
+    color: var(--bonbon-5);
+}
+
+.sidebar .accordion-button:hover {
+    background: rgba(255, 192, 203, .3);
+    color: var(--bonbon-5);
+}
+
+.sidebar .accordion-button:hover i {
+    color: var(--bonbon-5);
+}
+
+.sidebar .accordion-body {
+    background: rgba(255, 192, 203, .15);
+}
+
+.sidebar .accordion-body .nav-link {
+    color: var(--bonbon-4);
+}
+
+.sidebar .accordion-body .nav-link i {
+    color: var(--bonbon-3);
+}
+
+.sidebar .accordion-body .nav-link:hover {
+    background: var(--bonbon-1);
+    border-left-color: var(--bonbon-4);
+    color: var(--bonbon-4);
+}
+
+.sidebar .accordion-body .nav-link:hover i {
+    color: var(--bonbon-4);
+}
+
+.sidebar .accordion-body .nav-link.active {
+    background: var(--bonbon-1);
+    border-left-color: var(--bonbon-4);
+    color: var(--bonbon-4);
+}
+
+.sidebar .accordion-body .nav-link.active i {
+    color: var(--bonbon-4);
+}
+
 .sidebar-divider {
     height: 1px;
     background: var(--bonbon-1);

@@ -1,0 +1,96 @@
+/* Sidebar Accordion Styles */
+
+.sidebar {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.sidebar .accordion {
+    --bs-accordion-bg: transparent;
+    --bs-accordion-border-color: transparent;
+}
+
+.sidebar .accordion-item {
+    background: transparent;
+    border: none;
+    margin-bottom: 0;
+}
+
+.sidebar .accordion-button {
+    background: transparent;
+    color: inherit;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    border: none;
+    box-shadow: none !important;
+    transition: all 0.3s ease;
+}
+
+.sidebar .accordion-button:not(.collapsed) {
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+}
+
+.sidebar .accordion-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar .accordion-button::after {
+    width: 1rem;
+    height: 1rem;
+    background-size: 1rem;
+    margin-left: auto;
+}
+
+.sidebar .accordion-body {
+    padding: 0;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .accordion-body .nav-link {
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.sidebar .accordion-body .nav-link:hover {
+    padding-left: 2.8rem;
+}
+
+.sidebar .accordion-body .nav-link.active {
+    font-weight: 600;
+}
+
+.sidebar .sidebar-header {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.sidebar .nav-link:not(.accordion-body .nav-link) {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+
+/* Animation pour le collapse */
+.accordion-collapse {
+    transition: height 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .sidebar .accordion-button {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.9rem;
+    }
+    
+    .sidebar .accordion-body .nav-link {
+        padding: 0.5rem 0.85rem 0.5rem 2.2rem;
+        font-size: 0.85rem;
+    }
+}

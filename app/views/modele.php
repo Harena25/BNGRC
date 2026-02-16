@@ -55,6 +55,10 @@
                 href="/needs/list">
                 <i class="bi bi-card-checklist"></i> Besoins
             </a>
+            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/purchases') !== false ? 'active' : ''; ?>"
+                href="/purchases/list">
+                <i class="bi bi-cart3"></i> Achats
+            </a>
 
             <div class="sidebar-divider"></div>
             <div class="sidebar-header">Opérations</div>

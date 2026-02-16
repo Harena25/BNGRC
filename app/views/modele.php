@@ -7,7 +7,7 @@
     <title>BNGRC — Suivi des collectes</title>
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="/assets/style/style1.css">
+    <link id="themeStylesheet" rel="stylesheet" href="/assets/style/style1.css">
 </head>
 
 <body>
@@ -67,6 +67,18 @@
                 href="/cities">
                 <i class="bi bi-geo-alt"></i> Villes
             </a>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-header">Thème</div>
+            <nav aria-label="Theme selector" style="padding:0 0 0 0;">
+                <a href="#" class="nav-link theme-switch" data-theme="/assets/style/style.css"><i
+                        class="bi bi-palette"></i> Bonbon</a>
+                <a href="#" class="nav-link theme-switch" data-theme="/assets/style/style1.css"><i
+                        class="bi bi-palette-fill"></i> Vibrant</a>
+                <a href="#" class="nav-link theme-switch" data-theme="/assets/style/style2.css"><i
+                        class="bi bi-tree-fill"></i> Nature</a>
+                <a href="#" class="nav-link theme-switch" data-theme="/assets/style/style3.css"><i
+                        class="bi bi-flower1"></i> Pastoral</a>
+            </nav>
         </nav>
     </aside>
 
@@ -97,6 +109,35 @@
                 sidebar.classList.remove('show');
             }
         });
+
+        // Theme switcher (persists in localStorage)
+        (function () {
+            const themeLink = document.getElementById('themeStylesheet');
+            const defaultTheme = themeLink ? themeLink.getAttribute('href') : '/assets/style/style.css';
+            const saved = localStorage.getItem('bngrc_theme');
+            if (saved) {
+                themeLink.setAttribute('href', saved);
+            }
+
+            function setActiveButton(href) {
+                document.querySelectorAll('.theme-switch').forEach(el => {
+                    if (el.getAttribute('data-theme') === href) el.classList.add('active'); else el.classList.remove('active');
+                });
+            }
+
+            setActiveButton(saved || defaultTheme);
+
+            document.querySelectorAll('.theme-switch').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('data-theme');
+                    if (!themeLink) return;
+                    themeLink.setAttribute('href', href);
+                    localStorage.setItem('bngrc_theme', href);
+                    setActiveButton(href);
+                });
+            });
+        })();
     </script>
 </body>
 

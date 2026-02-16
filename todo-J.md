@@ -10,7 +10,9 @@ Ce que j ai besoin pour cette fonctionnalite:
 Base : bn_distribution
     route : GET /autoDispatch();
 
+
 Backend  :
+        route : GET /autoDistribution
+        contoller  : distributionController = > autoDistribution
 Frontend  :
-    un bouton seulement  
-    
+    un bouton seulement  qui appelle route 

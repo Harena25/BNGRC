@@ -4,6 +4,7 @@ require_once __DIR__ . '/controllers/DonsController.php';
 require_once __DIR__ . '/repositories/ArticlesRepository.php';
 require_once __DIR__ . '/repositories/DonsRepository.php';
 require_once __DIR__ . '/repositories/CategorieRepository.php';
+require_once __DIR__ . '/controllers/DistributionController.php';
 
 
 // Articles routes
@@ -21,6 +22,14 @@ Flight::route('POST /dons', ['DonsController', 'create']);
 Flight::route('GET /dons/@id/edit', ['DonsController', 'editForm']);
 Flight::route('POST /dons/@id', ['DonsController', 'update']);
 Flight::route('POST /dons/@id/delete', ['DonsController', 'delete']);
+// Login routes
+
+Flight::route('GET /autoDistribution', function () {
+    $ctrl = new DistributionController();
+    return $ctrl->autoDistribution();
+});
+
+
 
 // Flight::route('POST /register', ['AuthController', 'postRegister']);
 

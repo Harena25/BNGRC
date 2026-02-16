@@ -37,7 +37,7 @@ INSERT INTO bn_categorie (id, libelle) VALUES
 (5,'Vêtements');
 
 -- Articles
-INSERT INTO bn_article (id, libelle, cat_article, prix_unitaire) VALUES
+INSERT INTO bn_article (id, libelle, categorie_id, prix_unitaire) VALUES
 (1,'Riz 50kg',1,35.00),
 (2,'Riz 5kg',1,4.00),
 (3,'Huile 5L',1,12.50),

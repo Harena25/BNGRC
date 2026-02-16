@@ -22,8 +22,7 @@ class AchatsController
      */
     public function index()
     {
-        $villes   = $this->villesRepo->getAll();
-        $articles = $this->articlesRepo->findAll();
+        $villes   = $this->achatsService->getVillesAvecBesoinsRestants();
         $solde    = $this->achatsService->getSoldeArgent();
 
         $success = isset($_SESSION['flash_success']) ? $_SESSION['flash_success'] : null;
@@ -31,7 +30,6 @@ class AchatsController
 
         Flight::render('modele', [
             'villes'   => $villes,
-            'articles' => $articles,
             'solde'    => $solde,
             'success'  => $success,
             'error'    => null,
@@ -78,13 +76,11 @@ class AchatsController
 
         // Validation basique
         if ($villeId <= 0 || $articleId <= 0 || $quantite <= 0 || $dateAchat === '') {
-            $villes   = $this->villesRepo->getAll();
-            $articles = $this->articlesRepo->findAll();
-            $solde    = $this->achatsService->getSoldeArgent();
+            $villes = $this->achatsService->getVillesAvecBesoinsRestants();
+            $solde  = $this->achatsService->getSoldeArgent();
 
             Flight::render('modele', [
                 'villes'   => $villes,
-                'articles' => $articles,
                 'solde'    => $solde,
                 'error'    => 'Tous les champs sont obligatoires et doivent être valides.',
                 'success'  => null,
@@ -107,14 +103,12 @@ class AchatsController
             $_SESSION['flash_success'] = $result['message'];
             Flight::redirect('/purchases');
         } else {
-            // Erreur (solde insuffisant, article invalide, etc.)
-            $villes   = $this->villesRepo->getAll();
-            $articles = $this->articlesRepo->findAll();
-            $solde    = $this->achatsService->getSoldeArgent();
+            // Erreur (solde insuffisant, article invalide, quantité trop élevée, etc.)
+            $villes = $this->achatsService->getVillesAvecBesoinsRestants();
+            $solde  = $this->achatsService->getSoldeArgent();
 
             Flight::render('modele', [
                 'villes'   => $villes,
-                'articles' => $articles,
                 'solde'    => $solde,
                 'error'    => $result['message'],
                 'success'  => null,
@@ -128,5 +122,20 @@ class AchatsController
                 'pagename' => 'achats/formulaire.php',
             ]);
         }
+    }
+
+    /**
+     * API JSON : retourne les articles achetables pour une ville donnée
+     */
+    public function getArticlesParVille()
+    {
+        $villeId = (int) Flight::request()->query->ville_id;
+        if ($villeId <= 0) {
+            Flight::json([]);
+            return;
+        }
+
+        $articles = $this->achatsService->getArticlesAchetablesParVille($villeId);
+        Flight::json($articles);
     }
 }

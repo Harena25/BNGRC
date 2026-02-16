@@ -77,4 +77,80 @@ class AchatsRepository
 
         return $totalDons - $totalAchats;
     }
+
+    /**
+     * Récupérer les villes qui ont encore des besoins restants achetables
+     * (besoin_restant - stock_disponible - deja_achete > 0)
+     */
+    public function getVillesAvecBesoinsRestants(): array
+    {
+        $sql = "
+            SELECT DISTINCT
+                v.id,
+                v.libelle,
+                v.region_id,
+                r.libelle AS region
+            FROM bn_besoin b
+            JOIN bn_ville v ON v.id = b.ville_id
+            JOIN bn_region r ON r.id = v.region_id
+            JOIN bn_article a ON a.id = b.article_id
+            LEFT JOIN bn_stock s ON s.article_id = b.article_id
+            LEFT JOIN (
+                SELECT ville_id, article_id, SUM(quantite) AS total_achete
+                FROM bn_achats
+                GROUP BY ville_id, article_id
+            ) ach ON ach.ville_id = b.ville_id AND ach.article_id = b.article_id
+            WHERE b.status_id != 3
+              AND a.categorie_id != 3
+            GROUP BY v.id, v.libelle, v.region_id, r.libelle, b.article_id
+            HAVING SUM(b.quantite) - LEAST(COALESCE(MAX(s.quantite_stock), 0), SUM(b.quantite)) - COALESCE(MAX(ach.total_achete), 0) > 0
+            ORDER BY r.libelle ASC, v.libelle ASC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Récupérer les articles achetables pour une ville donnée
+     * Retourne : article_id, libelle, categorie, prix_unitaire, besoin_restant, stock, deja_achete, quantite_achetable
+     */
+    public function getArticlesAchetablesParVille(int $villeId): array
+    {
+        $sql = "
+            SELECT 
+                a.id AS article_id,
+                a.libelle AS article_name,
+                c.libelle AS categorie_name,
+                a.prix_unitaire,
+                SUM(b.quantite) AS besoin_restant,
+                COALESCE(MAX(s.quantite_stock), 0) AS stock_disponible,
+                COALESCE(MAX(ach.total_achete), 0) AS deja_achete,
+                GREATEST(0, 
+                    SUM(b.quantite) 
+                    - LEAST(COALESCE(MAX(s.quantite_stock), 0), SUM(b.quantite)) 
+                    - COALESCE(MAX(ach.total_achete), 0)
+                ) AS quantite_achetable
+            FROM bn_besoin b
+            JOIN bn_article a ON a.id = b.article_id
+            JOIN bn_categorie c ON c.id = a.categorie_id
+            LEFT JOIN bn_stock s ON s.article_id = b.article_id
+            LEFT JOIN (
+                SELECT ville_id, article_id, SUM(quantite) AS total_achete
+                FROM bn_achats
+                GROUP BY ville_id, article_id
+            ) ach ON ach.ville_id = b.ville_id AND ach.article_id = b.article_id
+            WHERE b.ville_id = :ville_id
+              AND b.status_id != 3
+              AND a.categorie_id != 3
+            GROUP BY a.id, a.libelle, c.libelle, a.prix_unitaire
+            HAVING quantite_achetable > 0
+            ORDER BY c.libelle, a.libelle
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':ville_id' => $villeId]);
+        return $stmt->fetchAll();
+    }
 }

@@ -55,7 +55,20 @@
                                                     <?php echo number_format($b['quantite']); ?>
                                                 </span>
                                             </td>
-                                            <td><?php echo htmlspecialchars($b['status'] ?? ''); ?></td>
+											<td>
+												<?php
+													$status = $b['status'] ?? '';
+													$badgeClass = match($status) {
+														'Satisfait' => 'bg-success',
+														'Partiellement satisfait' => 'bg-warning',
+														'Ouvert' => 'bg-danger',
+														default => 'bg-secondary',
+													};
+												?>
+												<span class="badge <?php echo $badgeClass; ?>">
+													<?php echo htmlspecialchars($status); ?>
+												</span>
+											</td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

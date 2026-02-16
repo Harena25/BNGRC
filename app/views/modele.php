@@ -7,7 +7,7 @@
     <title>BNGRC — Suivi des collectes</title>
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="/assets/style/style.css">
+    <link rel="stylesheet" href="/assets/style/style1.css">
 </head>
 
 <body>

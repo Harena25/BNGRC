@@ -79,7 +79,6 @@
                                                     <?php echo htmlspecialchars($b['status'] ?? ''); ?>
                                                 </span>
                                             </td>
-                                            <td><?php echo htmlspecialchars($b['status'] ?? ''); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

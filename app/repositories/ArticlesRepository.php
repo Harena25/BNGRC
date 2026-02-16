@@ -1,40 +1,12 @@
 <?php
-<<<<<<< HEAD
-
-class ArticlesRepository
-{
-    private PDO $pdo;
-
-=======
 class ArticlesRepository
 {
     private $pdo;
->>>>>>> refs/remotes/origin/main
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-<<<<<<< HEAD
-    public function getAll(): array
-    {
-        $sql = "
-            SELECT
-                a.id,
-                a.libelle,
-                a.categorie_id,
-                c.libelle AS categorie,
-                a.prix_unitaire
-            FROM bn_article a
-            JOIN bn_categorie c ON c.id = a.categorie_id
-            ORDER BY c.libelle ASC, a.libelle ASC
-        ";
-
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-=======
     public function create($data)
     {
         $st = $this->pdo->prepare("
@@ -83,5 +55,4 @@ class ArticlesRepository
         ]);
     }
 
->>>>>>> refs/remotes/origin/main
 }

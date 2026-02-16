@@ -1,20 +1,26 @@
 <?php
-require_once __DIR__ . '/controllers/AuthController.php';
-require_once __DIR__ . '/controllers/MessageController.php';
-require_once __DIR__ . '/services/Validator.php';
-require_once __DIR__ . '/services/UserService.php';
-require_once __DIR__ . '/repositories/UserRepository.php';
+require_once __DIR__ . '/controllers/ArticlesController.php';
+require_once __DIR__ . '/controllers/DonsController.php';
+require_once __DIR__ . '/repositories/ArticlesRepository.php';
+require_once __DIR__ . '/repositories/DonsRepository.php';
+require_once __DIR__ . '/repositories/CategorieRepository.php';
 
-Flight::route('/', function () {
-    Flight::redirect('/login');
-});
 
-// Login routes
-Flight::route('GET /login', ['AuthController', 'showLogin']);
-Flight::route('POST /login', ['AuthController', 'postLogin']);
+// Articles routes
+Flight::route('GET /articles', ['ArticlesController', 'list']);
+Flight::route('GET /articles/create', ['ArticlesController', 'showForm']);
+Flight::route('POST /articles', ['ArticlesController', 'create']);
+Flight::route('GET /articles/@id/edit', ['ArticlesController', 'editForm']);
+Flight::route('POST /articles/@id', ['ArticlesController', 'update']);
+Flight::route('POST /articles/@id/delete', ['ArticlesController', 'delete']);
 
-//message routes
-Flight::route('GET /messages', ['MessageController', 'list']);
+// Dons routes
+Flight::route('GET /dons', ['DonsController', 'list']);
+Flight::route('GET /dons/create', ['DonsController', 'showForm']);
+Flight::route('POST /dons', ['DonsController', 'create']);
+Flight::route('GET /dons/@id/edit', ['DonsController', 'editForm']);
+Flight::route('POST /dons/@id', ['DonsController', 'update']);
+Flight::route('POST /dons/@id/delete', ['DonsController', 'delete']);
 
 // Flight::route('POST /register', ['AuthController', 'postRegister']);
 

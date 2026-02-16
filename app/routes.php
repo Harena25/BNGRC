@@ -13,6 +13,7 @@ require_once __DIR__ . '/controllers/DashboardController.php';
 require_once __DIR__ . '/controllers/StockController.php';
 require_once __DIR__ . '/controllers/AchatsController.php';
 require_once __DIR__ . '/controllers/AchatController.php';
+require_once __DIR__ . '/controllers/RecapController.php';
 
 Flight::route('/', function () {
     Flight::redirect('/dashboard');
@@ -94,6 +95,12 @@ Flight::route('POST /purchases', function () {
     return $ctrl->store();
 });
 
+// API: articles achetables par ville (JSON)
+Flight::route('GET /purchases/articles', function () {
+    $ctrl = new AchatsController(Flight::db());
+    return $ctrl->getArticlesParVille();
+});
+
 // Achats - Nouveau systeme
 Flight::route('GET /achats/form/@besoin_id', function ($besoin_id) {
     $ctrl = new AchatController(Flight::db());
@@ -119,6 +126,10 @@ Flight::route('POST /achats/valider-global', function () {
     $ctrl = new AchatController(Flight::db());
     return $ctrl->validerGlobal();
 });
+
+// Récapitulatif (montants besoins/satisfaits/restants)
+Flight::route('GET /recap', ['RecapController', 'index']);
+Flight::route('GET /recap/data', ['RecapController', 'data']);
 
 
 

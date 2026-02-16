@@ -25,12 +25,12 @@
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle"></i>
                         Les dons en argent peuvent acheter des besoins en nature et matériaux.
-                        Un frais d'achat configurable est appliqué au prix total.
+                        Seules les villes avec des besoins restants sont affichées. Le stock existant est pris en compte.
                     </div>
 
                     <form action="/purchases" method="POST">
 
-                        <!-- Ville -->
+                        <!-- Ville (seulement celles avec besoins restants) -->
                         <div class="mb-3">
                             <label for="ville_id" class="form-label">Ville <span class="text-danger">*</span></label>
                             <select class="form-select" id="ville_id" name="ville_id" required>
@@ -42,23 +42,16 @@
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="form-text">Seules les villes ayant des besoins non satisfaits sont listées.</div>
                         </div>
 
-                        <!-- Article (excluant la catégorie Argent) -->
+                        <!-- Article (chargé dynamiquement selon la ville) -->
                         <div class="mb-3">
                             <label for="article_id" class="form-label">Article <span class="text-danger">*</span></label>
-                            <select class="form-select" id="article_id" name="article_id" required>
-                                <option value="">-- Sélectionner un article --</option>
-                                <?php foreach ($articles as $a): ?>
-                                    <?php if ((int)($a['categorie_id'] ?? 0) !== 3): // Exclure catégorie Argent ?>
-                                        <option value="<?php echo $a['id']; ?>"
-                                            data-prix="<?php echo $a['prix_unitaire']; ?>"
-                                            <?php echo (isset($old['article_id']) && $old['article_id'] == $a['id']) ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($a['categorie_libelle'] . ' - ' . $a['libelle'] . ' (' . number_format($a['prix_unitaire'], 2) . ' MAD)'); ?>
-                                        </option>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
+                            <select class="form-select" id="article_id" name="article_id" required disabled>
+                                <option value="">-- Sélectionnez d'abord une ville --</option>
                             </select>
+                            <div id="articleInfo" class="form-text"></div>
                         </div>
 
                         <!-- Quantité -->
@@ -71,7 +64,9 @@
                                    min="1"
                                    step="1"
                                    value="<?php echo htmlspecialchars($old['quantite'] ?? ''); ?>"
-                                   required>
+                                   required
+                                   disabled>
+                            <div id="quantiteInfo" class="form-text"></div>
                         </div>
 
                         <!-- Frais d'achat -->
@@ -105,17 +100,21 @@
                             <div class="card-body">
                                 <h6 class="card-title"><i class="bi bi-calculator"></i> Estimation du coût</h6>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <small class="text-muted">Prix unitaire</small>
                                         <div id="prixUnitaireDisplay" class="fw-bold">-</div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <small class="text-muted">Prix de base</small>
                                         <div id="prixBaseDisplay" class="fw-bold">-</div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <small class="text-muted">Prix total (avec frais)</small>
+                                    <div class="col-md-3">
+                                        <small class="text-muted">Prix total (+ frais)</small>
                                         <div id="prixTotalDisplay" class="fw-bold text-primary">-</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <small class="text-muted">Max achetable</small>
+                                        <div id="maxAchetableDisplay" class="fw-bold text-warning">-</div>
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +125,7 @@
                             <a href="/purchases/list" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Liste des achats
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="btnSubmit">
                                 <i class="bi bi-cart-check"></i> Enregistrer l'achat
                             </button>
                         </div>
@@ -138,18 +137,113 @@
 </div>
 
 <script>
-// Calcul dynamique du prix estimé
 (function() {
+    const villeSelect = document.getElementById('ville_id');
     const articleSelect = document.getElementById('article_id');
     const quantiteInput = document.getElementById('quantite');
     const fraisInput = document.getElementById('frais_pourcentage');
+    const articleInfo = document.getElementById('articleInfo');
+    const quantiteInfo = document.getElementById('quantiteInfo');
     const prixUnitaireEl = document.getElementById('prixUnitaireDisplay');
     const prixBaseEl = document.getElementById('prixBaseDisplay');
     const prixTotalEl = document.getElementById('prixTotalDisplay');
+    const maxAchetableEl = document.getElementById('maxAchetableDisplay');
 
+    let articlesData = [];
+
+    // Quand on change de ville, charger les articles achetables via AJAX
+    villeSelect.addEventListener('change', function() {
+        const villeId = this.value;
+        articleSelect.innerHTML = '<option value="">-- Chargement... --</option>';
+        articleSelect.disabled = true;
+        quantiteInput.disabled = true;
+        quantiteInput.value = '';
+        quantiteInput.removeAttribute('max');
+        articlesData = [];
+        resetEstimation();
+
+        if (!villeId) {
+            articleSelect.innerHTML = '<option value="">-- Sélectionnez d\'abord une ville --</option>';
+            articleInfo.textContent = '';
+            return;
+        }
+
+        fetch('/purchases/articles?ville_id=' + villeId)
+            .then(r => r.json())
+            .then(data => {
+                articlesData = data;
+                articleSelect.innerHTML = '<option value="">-- Sélectionner un article --</option>';
+                
+                if (data.length === 0) {
+                    articleSelect.innerHTML = '<option value="">-- Aucun article achetable --</option>';
+                    articleInfo.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Tous les besoins de cette ville sont couverts par le stock ou déjà achetés.</span>';
+                    return;
+                }
+
+                data.forEach(function(a) {
+                    const opt = document.createElement('option');
+                    opt.value = a.article_id;
+                    opt.setAttribute('data-prix', a.prix_unitaire);
+                    opt.setAttribute('data-max', a.quantite_achetable);
+                    opt.setAttribute('data-besoin', a.besoin_restant);
+                    opt.setAttribute('data-stock', a.stock_disponible);
+                    opt.setAttribute('data-achete', a.deja_achete);
+                    opt.textContent = a.categorie_name + ' - ' + a.article_name 
+                        + ' (' + parseFloat(a.prix_unitaire).toFixed(2) + ' MAD) — max: ' + a.quantite_achetable;
+                    articleSelect.appendChild(opt);
+                });
+
+                articleSelect.disabled = false;
+                articleInfo.textContent = data.length + ' article(s) disponible(s) à l\'achat.';
+
+                // Restaurer la sélection si old data
+                <?php if (!empty($old['article_id'])): ?>
+                const oldArticleId = '<?php echo $old['article_id']; ?>';
+                if (articleSelect.querySelector('option[value="' + oldArticleId + '"]')) {
+                    articleSelect.value = oldArticleId;
+                    articleSelect.dispatchEvent(new Event('change'));
+                }
+                <?php endif; ?>
+            })
+            .catch(() => {
+                articleSelect.innerHTML = '<option value="">-- Erreur de chargement --</option>';
+            });
+    });
+
+    // Quand on change d'article, mettre à jour la quantité max
+    articleSelect.addEventListener('change', function() {
+        const opt = this.options[this.selectedIndex];
+        if (!opt || !opt.value) {
+            quantiteInput.disabled = true;
+            quantiteInput.value = '';
+            quantiteInput.removeAttribute('max');
+            quantiteInfo.textContent = '';
+            resetEstimation();
+            return;
+        }
+
+        const maxQte = parseInt(opt.getAttribute('data-max')) || 0;
+        const besoin = parseInt(opt.getAttribute('data-besoin')) || 0;
+        const stock = parseInt(opt.getAttribute('data-stock')) || 0;
+        const achete = parseInt(opt.getAttribute('data-achete')) || 0;
+
+        quantiteInput.disabled = false;
+        quantiteInput.max = maxQte;
+        quantiteInput.min = 1;
+        quantiteInfo.innerHTML = 
+            'Besoin restant : <strong>' + besoin + '</strong>' +
+            ' | Stock : <strong>' + stock + '</strong>' +
+            ' | Déjà acheté : <strong>' + achete + '</strong>' +
+            ' | <span class="text-primary fw-bold">Max achetable : ' + maxQte + '</span>';
+
+        maxAchetableEl.textContent = maxQte;
+        updateEstimation();
+    });
+
+    // Mise à jour de l'estimation dynamique
     function updateEstimation() {
-        const selectedOption = articleSelect.options[articleSelect.selectedIndex];
-        const prix = selectedOption ? parseFloat(selectedOption.getAttribute('data-prix')) : 0;
+        const opt = articleSelect.options[articleSelect.selectedIndex];
+        const prix = opt ? parseFloat(opt.getAttribute('data-prix')) : 0;
         const qte = parseInt(quantiteInput.value) || 0;
         const frais = parseFloat(fraisInput.value) || 0;
 
@@ -166,11 +260,25 @@
         }
     }
 
-    articleSelect.addEventListener('change', updateEstimation);
-    quantiteInput.addEventListener('input', updateEstimation);
+    function resetEstimation() {
+        prixUnitaireEl.textContent = '-';
+        prixBaseEl.textContent = '-';
+        prixTotalEl.textContent = '-';
+        maxAchetableEl.textContent = '-';
+    }
+
+    quantiteInput.addEventListener('input', function() {
+        const max = parseInt(this.max) || 0;
+        if (max > 0 && parseInt(this.value) > max) {
+            this.value = max;
+        }
+        updateEstimation();
+    });
     fraisInput.addEventListener('input', updateEstimation);
 
-    // Initialiser au chargement
-    updateEstimation();
+    // Si old ville_id, déclencher le chargement
+    <?php if (!empty($old['ville_id'])): ?>
+    villeSelect.dispatchEvent(new Event('change'));
+    <?php endif; ?>
 })();
 </script>

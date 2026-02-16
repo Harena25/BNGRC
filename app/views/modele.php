@@ -101,6 +101,13 @@
                         </div>
                     </div>
                 </div>
+            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/recap') !== false ? 'active' : ''; ?>"
+                href="/recap">
+                <i class="bi bi-journal-text"></i> Récapitulatif
+            </a>
+
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-header">Opérations</div>
 
                 <!-- Section: Opérations -->
                 <div class="accordion-item">

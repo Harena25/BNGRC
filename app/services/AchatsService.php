@@ -22,6 +22,7 @@ class AchatsService
     /**
      * Valider et créer un achat
      * - Vérifie que l'article n'est pas de catégorie "Argent" (on ne peut pas acheter de l'argent)
+     * - Vérifie que la quantité ne dépasse pas les besoins restants (stock pris en compte)
      * - Calcule le prix total avec les frais
      * - Vérifie que le solde des dons en argent est suffisant
      *
@@ -42,6 +43,36 @@ class AchatsService
         // Vérifier que l'article n'est pas de catégorie "Argent" (categorie_id = 3)
         if ((int) $article['categorie_id'] === 3) {
             return ['success' => false, 'message' => 'Impossible d\'acheter un article de type "Argent".', 'id' => null];
+        }
+
+        // Vérifier la quantité achetable (besoins - stock - déjà acheté)
+        $articlesAchetables = $this->achatsRepo->getArticlesAchetablesParVille($villeId);
+        $maxAchetable = 0;
+        foreach ($articlesAchetables as $a) {
+            if ((int) $a['article_id'] === $articleId) {
+                $maxAchetable = (int) $a['quantite_achetable'];
+                break;
+            }
+        }
+
+        if ($maxAchetable <= 0) {
+            return [
+                'success' => false,
+                'message' => 'Aucun besoin restant pour cet article dans cette ville (stock suffisant ou déjà acheté).',
+                'id' => null
+            ];
+        }
+
+        if ($quantite > $maxAchetable) {
+            return [
+                'success' => false,
+                'message' => sprintf(
+                    'Quantité demandée (%d) supérieure au besoin restant achetable (%d). Stock et achats précédents pris en compte.',
+                    $quantite,
+                    $maxAchetable
+                ),
+                'id' => null
+            ];
         }
 
         // Calculer le prix total avec frais
@@ -93,5 +124,21 @@ class AchatsService
     public function getAll(?int $villeId = null): array
     {
         return $this->achatsRepo->getAll($villeId);
+    }
+
+    /**
+     * Récupérer les villes qui ont encore des besoins restants achetables
+     */
+    public function getVillesAvecBesoinsRestants(): array
+    {
+        return $this->achatsRepo->getVillesAvecBesoinsRestants();
+    }
+
+    /**
+     * Récupérer les articles achetables pour une ville donnée
+     */
+    public function getArticlesAchetablesParVille(int $villeId): array
+    {
+        return $this->achatsRepo->getArticlesAchetablesParVille($villeId);
     }
 }

@@ -13,6 +13,12 @@
                             <?php 
                                 if ($_GET['error'] == 'donnees_invalides') {
                                     echo 'Données invalides. Veuillez vérifier tous les champs.';
+                                } elseif ($_GET['error'] == 'stock_update_failed') {
+                                    $msg = $_GET['msg'] ?? '';
+                                    echo 'Erreur lors de la mise à jour du stock.';
+                                    if (!empty($msg)) {
+                                        echo ' Détails: ' . htmlspecialchars($msg);
+                                    }
                                 }
                             ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>

@@ -14,8 +14,10 @@ class VillesController
     public function index()
     {
         $villes = $this->repo->getAll();
-        Flight::render('villes/liste.php', [
+        $pagename = 'villes/liste.php';
+        Flight::render('modele', [
             'villes' => $villes,
+            'pagename' => $pagename,
         ]);
     }
 }

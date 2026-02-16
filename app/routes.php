@@ -94,6 +94,12 @@ Flight::route('POST /purchases', function () {
     return $ctrl->store();
 });
 
+// API: articles achetables par ville (JSON)
+Flight::route('GET /purchases/articles', function () {
+    $ctrl = new AchatsController(Flight::db());
+    return $ctrl->getArticlesParVille();
+});
+
 // Achats - Nouveau systeme
 Flight::route('GET /achats/form/@besoin_id', function ($besoin_id) {
     $ctrl = new AchatController(Flight::db());

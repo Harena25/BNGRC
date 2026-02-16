@@ -44,7 +44,7 @@
 						<?php foreach ($articles as $a): ?>
 							<option value="<?= $a['id'] ?>"
 								<?= (isset($old['article_id']) && $old['article_id'] == $a['id']) ? 'selected' : '' ?>>
-								<?= htmlspecialchars($a['categorie'] . ' - ' . $a['libelle']) ?>
+								<?= htmlspecialchars($a['categorie_id'] . ' - ' . $a['libelle']) ?>
 							</option>
 						<?php endforeach; ?>
 					</select>

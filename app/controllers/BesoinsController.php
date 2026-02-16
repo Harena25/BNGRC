@@ -23,28 +23,31 @@ class BesoinsController
 		$articles = $this->articlesRepo->findAll();
 		$success  = isset($_SESSION['flash_success']) ? $_SESSION['flash_success'] : null;
 		unset($_SESSION['flash_success']);
-
-		Flight::render('besoins/formulaire.php', [
+		$pagename='besoins/formulaire.php';
+		Flight::render('modele', [
 			'villes'   => $villes,
 			'articles' => $articles,
 			'success'  => $success,
 			'error'    => null,
 			'old'      => [],
+			'pagename' => $pagename,
 		]);
 	}
 
 	public function listPage()
-	{
+	{	
+		$pagename = 'besoins/liste.php';
 		$besoins = $this->besoinsRepo->getAll();
-		Flight::render('besoins/liste.php', [
+		Flight::render('modele', [
 			'besoins' => $besoins,
+			'pagename' => $pagename,
 		]);
 	}
 
 	public function store()
 	{
 		$data = Flight::request()->data;
-
+		$pagename = 'besoins/formulaire.php';
 		$villeId    = (int) $data->ville_id;
 		$articleId  = (int) $data->article_id;
 		$quantite   = (int) $data->quantite;
@@ -54,7 +57,7 @@ class BesoinsController
 		if ($villeId <= 0 || $articleId <= 0 || $quantite <= 0 || $dateBesoin === '' || $statusId <= 0) {
 			$villes   = $this->villesRepo->getAll();
 			$articles = $this->articlesRepo->findAll();
-			Flight::render('besoins/formulaire.php', [
+			Flight::render('modele', [
 				'villes'   => $villes,
 				'articles' => $articles,
 				'error'    => 'Tous les champs sont obligatoires et doivent être valides.',
@@ -65,7 +68,9 @@ class BesoinsController
 					'quantite'    => $quantite,
 					'date_besoin' => $dateBesoin,
 					'status_id'   => $statusId,
+					
 				],
+				'pagename' => $pagename,
 			]);
 			return;
 		}

@@ -1,14 +1,25 @@
 <?php
+require_once __DIR__ . '/../services/AutoDistributor.php';
+
 class DistributionController{
-    // existing autoDistribution left intact if present
+    
+    /**
+     * Run automatic distribution and redirect to dashboard
+     */
     public function autoDistribution(){
-        $pdo=Flight::db(); 
-        echo "Automatic distribution of messages executed.";
-        $stockRepository = new StockRepository($pdo);
-        $stock = $stockRepository->getAll();
-        foreach($stock as $item){
-            echo "Article: " . $item['article_name'] . " - Quantity: " . $item['quantite_stock'] . "<br>";
+        $pdo = Flight::db();
+        $distributor = new AutoDistributor($pdo);
+        $log = $distributor->run();
+        
+        // Store log in session for display
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
         }
+        $_SESSION['allocation_log'] = $log;
+        $_SESSION['allocation_success'] = true;
+        
+        // Redirect to dashboard
+        Flight::redirect('/dashboard?allocation=done');
     }
 
     // New: list distributions and render a view

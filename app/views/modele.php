@@ -300,9 +300,9 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">Navigation</div>
         <nav>
-            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/needs') !== false ? 'active' : ''; ?>"
-                href="/needs">
-                <i class="bi bi-clipboard-heart"></i> Tableau de bord
+            <a class="nav-link <?php echo ($_SERVER['REQUEST_URI'] === '/' || strpos($_SERVER['REQUEST_URI'], '/dashboard') !== false) ? 'active' : ''; ?>"
+                href="/dashboard">
+                <i class="bi bi-speedometer2"></i> Tableau de bord
             </a>
 
             <div class="sidebar-divider"></div>

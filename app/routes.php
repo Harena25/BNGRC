@@ -9,10 +9,14 @@ require_once __DIR__ . '/controllers/DistributionController.php';
 require_once __DIR__ . '/controllers/BesoinsController.php';
 require_once __DIR__ . '/controllers/VillesController.php';
 require_once __DIR__ . '/controllers/ArticlesController.php';
+require_once __DIR__ . '/controllers/DashboardController.php';
 
 Flight::route('/', function () {
-    Flight::redirect('/articles');
+    Flight::redirect('/dashboard');
 });
+
+// Dashboard
+Flight::route('GET /dashboard', ['DashboardController', 'index']);
 
 Flight::route('GET /needs', function () {
     $ctrl = new BesoinsController(Flight::db());

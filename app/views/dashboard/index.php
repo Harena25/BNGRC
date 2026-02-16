@@ -1,0 +1,220 @@
+<?php
+// Variables: $cities, $besoinsByCity, $distributionsByCity, $stats, $recentBesoins, $recentDons
+?>
+
+<!-- ═══ STATS CARDS ═══ -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-geo-alt-fill fs-2" style="color:var(--bonbon-3);"></i>
+                <h3 class="mb-0 mt-2"><?php echo number_format($stats['total_villes']); ?></h3>
+                <small class="text-muted">Villes</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-clipboard-heart-fill fs-2" style="color:var(--bonbon-4);"></i>
+                <h3 class="mb-0 mt-2"><?php echo number_format($stats['total_besoins']); ?></h3>
+                <small class="text-muted">Besoins</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-exclamation-triangle-fill fs-2 text-warning"></i>
+                <h3 class="mb-0 mt-2"><?php echo number_format($stats['besoins_ouverts']); ?></h3>
+                <small class="text-muted">En attente</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-gift-fill fs-2" style="color:var(--bonbon-3);"></i>
+                <h3 class="mb-0 mt-2"><?php echo number_format($stats['total_dons']); ?></h3>
+                <small class="text-muted">Dons</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-truck fs-2" style="color:var(--bonbon-4);"></i>
+                <h3 class="mb-0 mt-2"><?php echo number_format($stats['total_distributions']); ?></h3>
+                <small class="text-muted">Distributions</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-cash-stack fs-2 text-success"></i>
+                <h3 class="mb-0 mt-2"><?php echo number_format($stats['valeur_stock'], 0, ',', ' '); ?></h3>
+                <small class="text-muted">Stock (MAD)</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MAIN TABLE: VILLES + BESOINS + DISTRIBUTIONS ═══ -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-bar-chart-fill me-2"></i>Tableau de bord par ville</span>
+        <a href="/autoDistribution" class="btn btn-sm btn-light"><i class="bi bi-lightning-fill"></i> Lancer allocation</a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Région</th>
+                        <th>Ville</th>
+                        <th class="text-center">Besoins</th>
+                        <th class="text-center">Ouverts</th>
+                        <th class="text-center">Partiels</th>
+                        <th class="text-center">Satisfaits</th>
+                        <th class="text-end">Valeur besoins</th>
+                        <th class="text-center">Distributions</th>
+                        <th class="text-end">Valeur distribuée</th>
+                        <th class="text-center">Couverture</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($cities as $city): 
+                    $vid = $city['id'];
+                    $b = $besoinsByCity[$vid] ?? null;
+                    $d = $distributionsByCity[$vid] ?? null;
+                    
+                    $totalBesoins = $b['total_besoins'] ?? 0;
+                    $ouverts = $b['besoins_ouverts'] ?? 0;
+                    $partiels = $b['besoins_partiels'] ?? 0;
+                    $satisfaits = $b['besoins_satisfaits'] ?? 0;
+                    $valeurBesoins = $b['valeur_totale_besoins'] ?? 0;
+                    
+                    $totalDist = $d['total_distributions'] ?? 0;
+                    $valeurDist = $d['valeur_totale_distribuee'] ?? 0;
+                    
+                    $couverture = ($valeurBesoins > 0) ? round(($valeurDist / $valeurBesoins) * 100, 1) : 0;
+                    $progressColor = ($couverture >= 80) ? 'success' : (($couverture >= 40) ? 'warning' : 'danger');
+                ?>
+                    <tr>
+                        <td><span class="badge bg-info"><?php echo htmlspecialchars($city['region_name'] ?? '-'); ?></span></td>
+                        <td><strong><?php echo htmlspecialchars($city['ville_name']); ?></strong></td>
+                        <td class="text-center"><?php echo $totalBesoins; ?></td>
+                        <td class="text-center">
+                            <?php if ($ouverts > 0): ?>
+                                <span class="badge bg-warning text-dark"><?php echo $ouverts; ?></span>
+                            <?php else: ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-center">
+                            <?php if ($partiels > 0): ?>
+                                <span class="badge" style="background:#ffc107;color:#5a3a44;"><?php echo $partiels; ?></span>
+                            <?php else: ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-center">
+                            <?php if ($satisfaits > 0): ?>
+                                <span class="badge bg-success"><?php echo $satisfaits; ?></span>
+                            <?php else: ?>
+                                <span class="text-muted">-</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-end"><?php echo number_format($valeurBesoins, 0, ',', ' '); ?></td>
+                        <td class="text-center"><?php echo $totalDist; ?></td>
+                        <td class="text-end"><?php echo number_format($valeurDist, 0, ',', ' '); ?></td>
+                        <td>
+                            <div class="progress" style="height: 20px; min-width: 80px;">
+                                <div class="progress-bar bg-<?php echo $progressColor; ?>" 
+                                     role="progressbar" 
+                                     style="width: <?php echo min($couverture, 100); ?>%;"
+                                     aria-valuenow="<?php echo $couverture; ?>" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    <?php echo $couverture; ?>%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ RECENT ACTIVITIES ═══ -->
+<div class="row g-4">
+    <!-- Recent Besoins -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-clock-history me-2"></i>Derniers besoins enregistrés
+            </div>
+            <div class="card-body p-0">
+                <?php if (empty($recentBesoins)): ?>
+                    <div class="p-3 text-muted">Aucun besoin enregistré.</div>
+                <?php else: ?>
+                    <ul class="list-group list-group-flush">
+                    <?php foreach ($recentBesoins as $rb): ?>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-semibold"><?php echo htmlspecialchars($rb['article_name'] ?? ''); ?></span>
+                                <small class="text-muted ms-2">(<?php echo htmlspecialchars($rb['ville_name'] ?? ''); ?>)</small>
+                                <br>
+                                <small class="text-muted">Qté: <?php echo $rb['quantite']; ?> &bull; <?php echo $rb['date_besoin']; ?></small>
+                            </div>
+                            <?php 
+                            $statusClass = 'secondary';
+                            if ($rb['status_id'] == 1) $statusClass = 'warning';
+                            elseif ($rb['status_id'] == 2) $statusClass = 'info';
+                            elseif ($rb['status_id'] == 3) $statusClass = 'success';
+                            ?>
+                            <span class="badge bg-<?php echo $statusClass; ?>"><?php echo htmlspecialchars($rb['status_name'] ?? ''); ?></span>
+                        </li>
+                    <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+            <div class="card-footer text-end">
+                <a href="/needs/list" class="btn btn-sm btn-outline-primary">Voir tous</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Dons -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-gift me-2"></i>Derniers dons reçus
+            </div>
+            <div class="card-body p-0">
+                <?php if (empty($recentDons)): ?>
+                    <div class="p-3 text-muted">Aucun don enregistré.</div>
+                <?php else: ?>
+                    <ul class="list-group list-group-flush">
+                    <?php foreach ($recentDons as $rd): ?>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-semibold"><?php echo htmlspecialchars($rd['article_name'] ?? ''); ?></span>
+                                <br>
+                                <small class="text-muted">Qté: <?php echo $rd['quantite_donnee']; ?> &bull; <?php echo $rd['date_don']; ?></small>
+                            </div>
+                            <span class="badge bg-success"><i class="bi bi-check2"></i> Reçu</span>
+                        </li>
+                    <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+            <div class="card-footer text-end">
+                <a href="/dons" class="btn btn-sm btn-outline-primary">Voir tous</a>
+            </div>
+        </div>
+    </div>
+</div>

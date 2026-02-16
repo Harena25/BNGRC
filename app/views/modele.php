@@ -344,6 +344,9 @@
     <footer class="footer">
         <i class="bi bi-heart-fill" style="color:var(--bonbon-3);"></i>
         &copy; <?php echo date('Y'); ?> BNGRC &mdash; Suivi des collectes et distributions de dons
+        <p>RAKOTOARIVONY Harena Natolotra Sarobidy       ETU-3940</p>
+        <p>FENOHERYLIANTSOA Ny Aina Andreane             ETU-4199</p>
+        <p>FANEVA Jedidia                                ETU-4042</p>
     </footer>
 
     <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>

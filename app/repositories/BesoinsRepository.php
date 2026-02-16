@@ -11,7 +11,7 @@ class BesoinsRepository
     public function getAll(): array
     {
         $sql = "
-            SELECT b.id,b.ville_id,v.libelle AS ville,v.region_id,r.libelle AS region,b.article_id,a.libelle AS article,a.prix_unitaire,c.id AS categorie_id,c.libelle AS categorie,b.quantite,b.date_besoin, b.status_id,s.libelle AS status,b.created_at
+            SELECT b.id,b.ville_id,v.libelle AS ville,v.region_id,r.libelle AS region,b.article_id,a.libelle AS article,a.prix_unitaire,c.id AS categorie_id,c.libelle AS categorie,b.quantite,b.quantite_initiale,b.date_besoin,b.status_id,s.libelle AS status,b.created_at
             FROM bn_besoin b
             JOIN bn_ville v ON v.id = b.ville_id
             JOIN bn_region r ON r.id = v.region_id
@@ -38,14 +38,15 @@ class BesoinsRepository
     public function create(int $villeId, int $articleId, int $quantite, string $dateBesoin, int $statusId): int
     {
         $sql = "
-            INSERT INTO bn_besoin (ville_id, article_id, quantite, date_besoin, status_id)
-            VALUES (:ville_id, :article_id, :quantite, :date_besoin, :status_id)
+            INSERT INTO bn_besoin (ville_id, article_id, quantite, quantite_initiale, date_besoin, status_id)
+            VALUES (:ville_id, :article_id, :quantite, :quantite_initiale, :date_besoin, :status_id)
         ";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':ville_id' => $villeId,
             ':article_id' => $articleId,
             ':quantite' => $quantite,
+            ':quantite_initiale' => $quantite,
             ':date_besoin' => $dateBesoin,
             ':status_id' => $statusId,
         ]);
@@ -60,6 +61,7 @@ class BesoinsRepository
             SET ville_id = :ville_id,
                 article_id = :article_id,
                 quantite = :quantite,
+                quantite_initiale = :quantite_initiale,
                 date_besoin = :date_besoin,
                 status_id = :status_id
             WHERE id = :id
@@ -70,6 +72,7 @@ class BesoinsRepository
             ':ville_id' => $villeId,
             ':article_id' => $articleId,
             ':quantite' => $quantite,
+            ':quantite_initiale' => $quantite,
             ':date_besoin' => $dateBesoin,
             ':status_id' => $statusId,
         ]);

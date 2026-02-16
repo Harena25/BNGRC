@@ -31,12 +31,20 @@
                                         <th>Ville</th>
                                         <th>Catégorie</th>
                                         <th>Article</th>
-                                        <th>Quantité</th>
+                                        <th class="text-end">Qté initiale</th>
+                                        <th class="text-end">Reste</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($besoins as $b): ?>
+                                    <?php foreach ($besoins as $b): 
+                                        $qteInit = $b['quantite_initiale'] ?? $b['quantite'];
+                                        $qteReste = $b['quantite'];
+                                        $statusClass = 'secondary';
+                                        if (($b['status_id'] ?? 1) == 3) $statusClass = 'success';
+                                        elseif (($b['status_id'] ?? 1) == 2) $statusClass = 'warning';
+                                        elseif (($b['status_id'] ?? 1) == 1) $statusClass = 'danger';
+                                    ?>
                                         <tr>
                                             <td><?php echo htmlspecialchars($b['id']); ?></td>
                                             <td><?php echo htmlspecialchars($b['date_besoin'] ?? ''); ?></td>
@@ -50,12 +58,27 @@
                                             <td>
                                                 <strong><?php echo htmlspecialchars($b['article'] ?? 'N/A'); ?></strong>
                                             </td>
-                                            <td>
-                                                <span class="badge bg-success">
-                                                    <?php echo number_format($b['quantite']); ?>
+                                            <td class="text-end">
+                                                <span class="badge bg-primary">
+                                                    <?php echo number_format($qteInit); ?>
                                                 </span>
                                             </td>
-                                            <td><?php echo htmlspecialchars($b['status'] ?? ''); ?></td>
+                                            <td class="text-end">
+                                                <?php if (($b['status_id'] ?? 1) == 3): ?>
+                                                    <span class="text-success"><i class="bi bi-check-circle"></i></span>
+                                                <?php elseif ($qteReste > 0): ?>
+                                                    <span class="badge bg-warning text-dark">
+                                                        <?php echo number_format($qteReste); ?>
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="text-muted">0</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-<?php echo $statusClass; ?>">
+                                                    <?php echo htmlspecialchars($b['status'] ?? ''); ?>
+                                                </span>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

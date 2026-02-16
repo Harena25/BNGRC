@@ -97,58 +97,54 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
                         <th class="text-center">Ouverts</th>
                         <th class="text-center">Partiels</th>
                         <th class="text-center">Satisfaits</th>
-                        <th class="text-end">Valeur besoins</th>
+                        <th class="text-end">Qté besoins</th>
                         <th class="text-center">Distributions</th>
-                        <th class="text-end">Valeur distribuée</th>
+                        <th class="text-end">Qté distribuée</th>
+                        <th class="text-end">Reste</th>
                         <th class="text-center">Couverture</th>
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($cities as $city): 
-                    $vid = $city['id'];
-                    $b = $besoinsByCity[$vid] ?? null;
-                    $d = $distributionsByCity[$vid] ?? null;
-                    
-                    $totalBesoins = $b['total_besoins'] ?? 0;
-                    $ouverts = $b['besoins_ouverts'] ?? 0;
-                    $partiels = $b['besoins_partiels'] ?? 0;
-                    $satisfaits = $b['besoins_satisfaits'] ?? 0;
-                    $valeurBesoins = $b['valeur_totale_besoins'] ?? 0;
-                    
-                    $totalDist = $d['total_distributions'] ?? 0;
-                    $valeurDist = $d['valeur_totale_distribuee'] ?? 0;
-                    
-                    $couverture = ($valeurBesoins > 0) ? round(($valeurDist / $valeurBesoins) * 100, 1) : 0;
+                <?php foreach ($villeResume as $v): 
+                    $couverture = $v['pourcentage_couverture'] ?? 0;
                     $progressColor = ($couverture >= 80) ? 'success' : (($couverture >= 40) ? 'warning' : 'danger');
                 ?>
                     <tr>
-                        <td><span class="badge bg-info"><?php echo htmlspecialchars($city['region_name'] ?? '-'); ?></span></td>
-                        <td><strong><?php echo htmlspecialchars($city['ville_name']); ?></strong></td>
-                        <td class="text-center"><?php echo $totalBesoins; ?></td>
+                        <td><span class="badge bg-info"><?php echo htmlspecialchars($v['region_name'] ?? '-'); ?></span></td>
+                        <td><strong><?php echo htmlspecialchars($v['ville_name']); ?></strong></td>
+                        <td class="text-center"><?php echo $v['nb_besoins'] ?? 0; ?></td>
                         <td class="text-center">
-                            <?php if ($ouverts > 0): ?>
-                                <span class="badge bg-warning text-dark"><?php echo $ouverts; ?></span>
+                            <?php if (($v['nb_ouverts'] ?? 0) > 0): ?>
+                                <span class="badge bg-warning text-dark"><?php echo $v['nb_ouverts']; ?></span>
                             <?php else: ?>
                                 <span class="text-muted">-</span>
                             <?php endif; ?>
                         </td>
                         <td class="text-center">
-                            <?php if ($partiels > 0): ?>
-                                <span class="badge" style="background:#ffc107;color:#5a3a44;"><?php echo $partiels; ?></span>
+                            <?php if (($v['nb_partiels'] ?? 0) > 0): ?>
+                                <span class="badge" style="background:#ffc107;color:#5a3a44;"><?php echo $v['nb_partiels']; ?></span>
                             <?php else: ?>
                                 <span class="text-muted">-</span>
                             <?php endif; ?>
                         </td>
                         <td class="text-center">
-                            <?php if ($satisfaits > 0): ?>
-                                <span class="badge bg-success"><?php echo $satisfaits; ?></span>
+                            <?php if (($v['nb_satisfaits'] ?? 0) > 0): ?>
+                                <span class="badge bg-success"><?php echo $v['nb_satisfaits']; ?></span>
                             <?php else: ?>
                                 <span class="text-muted">-</span>
                             <?php endif; ?>
                         </td>
-                        <td class="text-end"><?php echo number_format($valeurBesoins, 0, ',', ' '); ?></td>
-                        <td class="text-center"><?php echo $totalDist; ?></td>
-                        <td class="text-end"><?php echo number_format($valeurDist, 0, ',', ' '); ?></td>
+                        <td class="text-end"><?php echo number_format($v['qte_besoin_total'] ?? 0, 0, ',', ' '); ?></td>
+                        <td class="text-center"><?php echo $v['nb_distributions'] ?? 0; ?></td>
+                        <td class="text-end"><?php echo number_format($v['qte_distribuee_total'] ?? 0, 0, ',', ' '); ?></td>
+                        <td class="text-end">
+                            <?php $reste = $v['qte_reste'] ?? 0; ?>
+                            <?php if ($reste > 0): ?>
+                                <span class="text-danger fw-bold"><?php echo number_format($reste, 0, ',', ' '); ?></span>
+                            <?php else: ?>
+                                <span class="text-success"><i class="bi bi-check-circle"></i> 0</span>
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <div class="progress" style="height: 20px; min-width: 80px;">
                                 <div class="progress-bar bg-<?php echo $progressColor; ?>" 

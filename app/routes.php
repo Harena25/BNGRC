@@ -7,6 +7,9 @@ require_once __DIR__ . '/repositories/CategorieRepository.php';
 require_once __DIR__ . '/repositories/StockRepository.php';
 require_once __DIR__ . '/controllers/DistributionController.php';
 
+Flight::route('GET /', function () {
+    Flight::redirect('/articles');
+});
 
 // Articles routes
 Flight::route('GET /articles', ['ArticlesController', 'list']);

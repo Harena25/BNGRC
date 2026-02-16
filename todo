@@ -12,3 +12,15 @@
 2. Saisie des dons [L]
     
 3. Dispatch automatique par ordre chronologique [J]
+
+## **version 2**
+
+(version 2)
+- Les dons en argent peuvent acheter les besoins en nature et matériaux selon les prix unitaires
+- Frais d'achat de x% configurable (ex: 100 + 10% = 110)
+- Message d'erreur si l'achat existe dans les dons restants
+
+### Pages Requises
+- Saisie et liste des achats filtrables par ville  [H]
+- Page de simulation (boutons simuler et validation) [J]
+- Page de récapitulation (actualisable en Ajax) [L]

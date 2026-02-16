@@ -1,5 +1,22 @@
-CREATE DATABASE IF NOT EXIST bngrc;
+CREATE DATABASE IF NOT EXISTS bngrc;
 USE bngrc;
+
+CREATE TABLE IF NOT EXISTS bn_region (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS bn_ville (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    region_id INT NOT NULL,
+    libelle VARCHAR(255) NOT NULL,
+    FOREIGN KEY (region_id) REFERENCES bn_region(id)
+);
+
+CREATE TABLE IF NOT EXISTS bn_status (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(255) NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS bn_categorie (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -9,9 +26,9 @@ CREATE TABLE IF NOT EXISTS bn_categorie (
 CREATE TABLE IF NOT EXISTS bn_article (
     id INT AUTO_INCREMENT PRIMARY KEY,
     libelle VARCHAR(255) NOT NULL,
-    cat_article VARCHAR(255) NOT NULL,
+    categorie_id INT NOT NULL,
     prix_unitaire DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (cat_article) REFERENCES bn_categorie(id)
+    FOREIGN KEY (categorie_id) REFERENCES bn_categorie(id)
 ); 
 
 CREATE TABLE IF NOT EXISTS bn_besoin (
@@ -25,23 +42,6 @@ CREATE TABLE IF NOT EXISTS bn_besoin (
     FOREIGN KEY (article_id) REFERENCES bn_article(id),
     FOREIGN KEY (ville_id) REFERENCES bn_ville(id),
     FOREIGN KEY (status_id) REFERENCES bn_status(id)
-);
-
-CREATE TABLE IF NOT EXISTS bn_status (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    libelle VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS bn_ville (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    region_id INT NOT NULL,
-    libelle VARCHAR(255) NOT NULL,
-    FOREIGN KEY (region_id) REFERENCES bn_region(id)
-);
-
-CREATE TABLE IF NOT EXISTS bn_region (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    libelle VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS bn_distribution (

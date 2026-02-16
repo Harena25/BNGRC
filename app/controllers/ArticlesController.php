@@ -6,8 +6,9 @@ class ArticlesController
         $pdo = Flight::db();
         $repo = new ArticlesRepository($pdo);
         $articles = $repo->findAll();
+        $pagename = "articles/liste.php";
 
-        Flight::render('articles/liste', ['articles' => $articles]);
+        Flight::render('modele', ['articles' => $articles, 'pagename' => $pagename]);
     }
 
     public static function showForm()
@@ -15,8 +16,9 @@ class ArticlesController
         $pdo = Flight::db();
         $categorieRepo = new CategorieRepository($pdo);
         $categories = $categorieRepo->findAll();
+        $pagename = "articles/formulaire.php";
 
-        Flight::render('articles/formulaire', ['categories' => $categories]);
+        Flight::render('modele', ['categories' => $categories, 'pagename' => $pagename]);
     }
 
     public static function create()
@@ -53,8 +55,9 @@ class ArticlesController
 
         $categorieRepo = new CategorieRepository($pdo);
         $categories = $categorieRepo->findAll();
+        $pagename = "articles/formulaire.php";
 
-        Flight::render('articles/formulaire', ['article' => $article, 'categories' => $categories]);
+        Flight::render('modele', ['article' => $article, 'categories' => $categories, 'pagename' => $pagename]);
     }
 
     public static function update($id)

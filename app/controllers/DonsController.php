@@ -7,8 +7,9 @@ class DonsController
         $pdo = Flight::db();
         $repo = new DonsRepository($pdo);
         $dons = $repo->findAll();
+        $pagename = "dons/liste.php";
 
-        Flight::render('dons/liste', ['dons' => $dons]);
+        Flight::render('modele', ['dons' => $dons, 'pagename' => $pagename]);
     }
 
     public static function showForm()
@@ -16,8 +17,9 @@ class DonsController
         $pdo = Flight::db();
         $articlesRepo = new ArticlesRepository($pdo);
         $articles = $articlesRepo->findAll();
+        $pagename = "dons/formulaire.php";
 
-        Flight::render('dons/formulaire', ['articles' => $articles]);
+        Flight::render('modele', ['articles' => $articles, 'pagename' => $pagename]);
     }
 
     public static function create()
@@ -81,8 +83,9 @@ class DonsController
 
         $articlesRepo = new ArticlesRepository($pdo);
         $articles = $articlesRepo->findAll();
+        $pagename = "dons/formulaire.php";
 
-        Flight::render('dons/formulaire', ['don' => $don, 'articles' => $articles]);
+        Flight::render('modele', ['don' => $don, 'articles' => $articles, 'pagename' => $pagename]);
     }
 
     public static function delete($id)

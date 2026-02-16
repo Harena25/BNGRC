@@ -1,4 +1,4 @@
-# Tâches pour la saisie des besoins par ville
+# Taches pour la saisie des besoins par ville
 
 ## Backend
 1. Intégrer la table `besoin` pour stocker les données.
@@ -32,8 +32,4 @@
 2. Ajouter les routes frontend :
    - `/needs` pour le formulaire.
    - `/needs/list` pour afficher la liste des besoins.
-
-## Tests
-1. Vérifier les fonctionnalités backend avec des tests unitaires.
-2. Tester les fonctionnalités frontend sur différents appareils et navigateurs.
 

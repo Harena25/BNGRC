@@ -11,6 +11,7 @@ require_once __DIR__ . '/controllers/VillesController.php';
 require_once __DIR__ . '/controllers/ArticlesController.php';
 require_once __DIR__ . '/controllers/DashboardController.php';
 require_once __DIR__ . '/controllers/StockController.php';
+require_once __DIR__ . '/controllers/AchatsController.php';
 
 Flight::route('/', function () {
     Flight::redirect('/dashboard');
@@ -70,6 +71,22 @@ Flight::route('GET /distribution/result', ['DistributionController', 'showResult
 
 // Stock
 Flight::route('GET /stock', ['StockController', 'list']);
+
+// Achats (purchases)
+Flight::route('GET /purchases', function () {
+    $ctrl = new AchatsController(Flight::db());
+    return $ctrl->index();
+});
+
+Flight::route('GET /purchases/list', function () {
+    $ctrl = new AchatsController(Flight::db());
+    return $ctrl->listPage();
+});
+
+Flight::route('POST /purchases', function () {
+    $ctrl = new AchatsController(Flight::db());
+    return $ctrl->store();
+});
 
 
 

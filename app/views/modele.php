@@ -35,16 +35,36 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">Navigation</div>
         <nav>
-            <!-- Tableau de bord (direct link) -->
-            <a class="nav-link <?php echo ($_SERVER['REQUEST_URI'] === '/' || strpos($_SERVER['REQUEST_URI'], '/dashboard') !== false) ? 'active' : ''; ?>"
-                href="/dashboard">
-                <i class="bi bi-speedometer2"></i> Tableau de bord
-            </a>
-
-            <div class="sidebar-divider"></div>
-
             <!-- Accordion Menu -->
             <div class="accordion accordion-flush" id="sidebarAccordion">
+                
+                <!-- Section: Tableau de bord -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button <?php echo ($_SERVER['REQUEST_URI'] === '/' || strpos($_SERVER['REQUEST_URI'], '/dashboard') !== false || strpos($_SERVER['REQUEST_URI'], '/recap') !== false) ? '' : 'collapsed'; ?>" 
+                                type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#collapseDashboard">
+                            <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+                        </button>
+                    </h2>
+                    <div id="collapseDashboard" 
+                         class="accordion-collapse collapse <?php echo ($_SERVER['REQUEST_URI'] === '/' || strpos($_SERVER['REQUEST_URI'], '/dashboard') !== false || strpos($_SERVER['REQUEST_URI'], '/recap') !== false) ? 'show' : ''; ?>" 
+                         data-bs-parent="#sidebarAccordion">
+                        <div class="accordion-body">
+                            <a class="nav-link <?php echo ($_SERVER['REQUEST_URI'] === '/' || strpos($_SERVER['REQUEST_URI'], '/dashboard') !== false) ? 'active' : ''; ?>"
+                                href="/dashboard">
+                                <i class="bi bi-house-fill"></i> Accueil
+                            </a>
+                            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/recap') !== false ? 'active' : ''; ?>"
+                                href="/recap">
+                                <i class="bi bi-journal-text"></i> Récapitulatif
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="sidebar-divider"></div>
                 
                 <!-- Section: Gestion -->
                 <div class="accordion-item">
@@ -101,10 +121,6 @@
                         </div>
                     </div>
                 </div>
-            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/recap') !== false ? 'active' : ''; ?>"
-                href="/recap">
-                <i class="bi bi-journal-text"></i> Récapitulatif
-            </a>
 
             <div class="sidebar-divider"></div>
             <div class="sidebar-header">Opérations</div>

@@ -47,7 +47,7 @@
                 href="/dons">
                 <i class="bi bi-gift"></i> Dons
             </a>
-            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/stock') !== false ? 'active' : ''; ?>"
+            <a class=" nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/stock') !== false ? 'active' : ''; ?>"
                 href="/stock">
                 <i class="bi bi-box-seam"></i> Stock
             </a>
@@ -63,7 +63,7 @@
                 href="/distribution">
                 <i class="bi bi-truck"></i> Distribution
             </a>
-            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/cities') !== false ? 'active' : ''; ?>"
+            <a class=" nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/cities') !== false ? 'active' : ''; ?>"
                 href="/cities">
                 <i class="bi bi-geo-alt"></i> Villes
             </a>

@@ -32,7 +32,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
                 <li class="nav-item"><a class="nav-link" href="/dons">Dons</a></li>
-                <li class="nav-item"><a class="nav-link" href="/autoDistribution">AutoDistribution</a></li>
+                <li class="nav-item"><a class="nav-link" href="/distribution">Distribution</a></li>
             </ul>
         </div>
     </div>
@@ -47,13 +47,24 @@
             <ul class="nav flex-column">
                 <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
                 <li class="nav-item"><a class="nav-link" href="/dons">Dons</a></li>
-                <li class="nav-item"><a class="nav-link" href="/autoDistribution">Distribution</a></li>
+                <li class="nav-item"><a class="nav-link" href="/distribution">Distribution</a></li>
             </ul>
         </aside>
 
         <!-- Main content -->
         <main class="col-md-9 col-lg-10 p-4">
-            <?php include __DIR__ . '/' . $pagename; ?>
+                <?php
+                    if (isset($pagename) && is_string($pagename)) {
+                        $viewFile = __DIR__ . '/' . $pagename;
+                        if (file_exists($viewFile)) {
+                            include $viewFile;
+                        } else {
+                            echo '<div class="alert alert-warning">Vue introuvable: ' . htmlspecialchars($pagename) . '</div>';
+                        }
+                    } elseif (isset($content)) {
+                        echo $content;
+                    }
+                ?>
         </main>
     </div>
 </div>

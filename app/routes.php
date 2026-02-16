@@ -11,7 +11,7 @@ require_once __DIR__ . '/controllers/VillesController.php';
 require_once __DIR__ . '/controllers/ArticlesController.php';
 
 Flight::route('/', function () {
-    Flight::redirect('/needs');
+    Flight::redirect('/articles');
 });
 
 Flight::route('GET /needs', function () {
@@ -56,6 +56,9 @@ Flight::route('GET /autoDistribution', function () {
     $ctrl = new DistributionController();
     return $ctrl->autoDistribution();
 });
+
+// Page to view distributions
+Flight::route('GET /distribution', ['DistributionController', 'list']);
 
 
 

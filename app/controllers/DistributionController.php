@@ -67,15 +67,45 @@ class DistributionController{
     // New: list distributions and render a view
     public static function list(){
         $pdo = Flight::db();
-        $sql = "SELECT d.*, a.libelle AS article_name, b.ville_id, v.libelle AS ville_name, b.date_besoin
+        $sql = "SELECT d.*, 
+                       a.libelle AS article_name, 
+                       a.prix_unitaire,
+                       c.libelle AS categorie_name,
+                       b.ville_id, 
+                       b.date_besoin,
+                       b.quantite AS besoin_reste,
+                       b.status_id,
+                       s.libelle AS status_name,
+                       v.libelle AS ville_name,
+                       r.libelle AS region_name
                 FROM bn_distribution d
                 LEFT JOIN bn_article a ON d.article_id = a.id
+                LEFT JOIN bn_categorie c ON a.categorie_id = c.id
                 LEFT JOIN bn_besoin b ON d.besoin_id = b.id
+                LEFT JOIN bn_status s ON b.status_id = s.id
                 LEFT JOIN bn_ville v ON b.ville_id = v.id
+                LEFT JOIN bn_region r ON v.region_id = r.id
                 ORDER BY d.date_distribution DESC, d.id DESC";
         $stmt = $pdo->query($sql);
         $distributions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Calculate stats
+        $totalDistributions = count($distributions);
+        $totalQuantite = array_sum(array_column($distributions, 'quantite_distribuee'));
+        $totalValeur = 0;
+        foreach($distributions as $d) {
+            $totalValeur += ($d['quantite_distribuee'] ?? 0) * ($d['prix_unitaire'] ?? 0);
+        }
+        
         $pagename = 'distribution/list.php';
-        Flight::render('modele', ['distributions' => $distributions, 'pagename' => $pagename]);
+        Flight::render('modele', [
+            'distributions' => $distributions, 
+            'pagename' => $pagename,
+            'stats' => [
+                'total' => $totalDistributions,
+                'quantite' => $totalQuantite,
+                'valeur' => $totalValeur
+            ]
+        ]);
     }
 }

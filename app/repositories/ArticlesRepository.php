@@ -51,22 +51,13 @@ class ArticlesRepository
 
     public function findAll()
     {
-        $st = $this->pdo->query("
-      SELECT a.*, c.libelle as categorie_libelle
-      FROM bn_article a
-      LEFT JOIN bn_categorie c ON a.categorie_id = c.id
-    ");
+        $st = $this->pdo->query("SELECT * FROM vw_articles");
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function findById($id)
     {
-        $st = $this->pdo->prepare("
-      SELECT a.*, c.libelle as categorie_libelle
-      FROM bn_article a
-      LEFT JOIN bn_categorie c ON a.categorie_id = c.id
-      WHERE a.id=? LIMIT 1
-    ");
+        $st = $this->pdo->prepare("SELECT * FROM vw_articles WHERE id=? LIMIT 1");
         $st->execute([(int) $id]);
         return $st->fetch(PDO::FETCH_ASSOC) ?: null;
     }

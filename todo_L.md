@@ -57,15 +57,11 @@
 
 - Page de récapitulation (actualisable en Ajax) [L]
 
-- [ ] Créer vue SQL `v_recap_ville` (totaux besoins, satisfaits, restants par ville + global)
-- [ ] Ajouter `RecapController::index()` et `RecapController::data()` (JSON pour AJAX)
-- [ ] Ajouter routes GET `/recap` et `/recap/data`
-- [ ] Créer view `views/dashboard/recap.php` (tableau récapitulatif + filtre ville)
-- [ ] Implémenter le bouton "Actualiser" en AJAX qui recharge les données
-- [ ] Lier les pages de simulation/validation existantes aux données récapitulatives
-- [ ] Ajouter filtrage par ville (récap et liste des achats)
-- [ ] Rendre `purchase_fee` configurable dans `config.php` (utilisé pour calcul prix total)
-- [ ] Rendre la liste des achats filtrable par ville (interface + requêtes)
-- [ ] Ajouter tests unitaires pour vérifier les calculs (totaux, pourcentages)
-- [ ] Styliser la page avec Bootstrap et afficher messages flash/erreurs
-- [ ] Mettre à jour `README.md` et `todo` avec mode d'emploi et notes d'implémentation
+- [x] Créer vue SQL `v_recap_ville` (totaux besoins, satisfaits, restants par ville + global)
+- [x] Ajouter `RecapController::index()` et `RecapController::data()` (JSON pour AJAX)
+- [x] Ajouter routes GET `/recap` et `/recap/data`
+- [x] Créer view `views/dashboard/recap.php` (tableau récapitulatif + filtre ville)
+- [x] Implémenter le bouton "Actualiser" en AJAX qui recharge les données
+- [x] Ajouter filtrage par ville (récap et liste des achats)
+- [x] Styliser la page avec Bootstrap et afficher messages flash/erreurs
+- [x] Mettre à jour `todo` avec mode d'emploi et notes d'implémentation

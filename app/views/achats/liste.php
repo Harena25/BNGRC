@@ -8,7 +8,7 @@
                     <span class="badge bg-success fs-6 me-2">
                         Solde argent : <?php echo number_format($solde ?? 0, 2); ?> MAD
                     </span>
-                    <a href="/purchases" class="btn btn-primary">
+                    <a href="<?php echo BASE_PATH; ?>/purchases" class="btn btn-primary">
                         <i class="bi bi-cart-plus"></i> Nouvel achat
                     </a>
                 </div>
@@ -17,7 +17,7 @@
             <!-- Filtre par ville -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <form method="GET" action="/purchases/list" class="row g-3 align-items-end">
+                    <form method="GET" action="<?php echo BASE_PATH; ?>/purchases/list" class="row g-3 align-items-end">
                         <div class="col-md-6">
                             <label for="ville_id" class="form-label"><i class="bi bi-funnel"></i> Filtrer par ville</label>
                             <select class="form-select" id="ville_id" name="ville_id">
@@ -37,7 +37,7 @@
                         </div>
                         <?php if (!empty($filtreVilleId)): ?>
                             <div class="col-md-3">
-                                <a href="/purchases/list" class="btn btn-outline-secondary w-100">
+                                <a href="<?php echo BASE_PATH; ?>/purchases/list" class="btn btn-outline-secondary w-100">
                                     <i class="bi bi-x-circle"></i> Réinitialiser
                                 </a>
                             </div>
@@ -53,7 +53,7 @@
                         <div class="text-center py-5">
                             <i class="bi bi-cart-x" style="font-size: 3rem; color: #ccc;"></i>
                             <p class="text-muted mt-3">Aucun achat enregistré pour le moment.</p>
-                            <a href="/purchases" class="btn btn-primary mt-2">
+                            <a href="<?php echo BASE_PATH; ?>/purchases" class="btn btn-primary mt-2">
                                 <i class="bi bi-cart-plus"></i> Effectuer le premier achat
                             </a>
                         </div>

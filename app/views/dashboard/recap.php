@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <script src="/assets/js/recap.js"></script>
+    <script src="<?php echo BASE_PATH; ?>/assets/js/recap.js"></script>
 
     <!-- Custom styles for this page -->
     <style>

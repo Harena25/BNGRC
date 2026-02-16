@@ -4,7 +4,7 @@
             <!-- En-tête avec titre et bouton d'ajout -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">Liste des articles</h2>
-                <a href="/articles/create" class="btn btn-primary">
+                <a href="<?php echo BASE_PATH; ?>/articles/create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Ajouter un article
                 </a>
             </div>
@@ -32,7 +32,7 @@
                         <div class="text-center py-5">
                             <i class="bi bi-box-seam" style="font-size: 3rem; color: #ccc;"></i>
                             <p class="text-muted mt-3">Aucun article enregistré pour le moment.</p>
-                            <a href="/articles/create" class="btn btn-primary mt-2">
+                            <a href="<?php echo BASE_PATH; ?>/articles/create" class="btn btn-primary mt-2">
                                 <i class="bi bi-plus-circle"></i> Ajouter le premier article
                             </a>
                         </div>
@@ -66,14 +66,15 @@
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group">
                                                     <!-- Bouton Modifier -->
-                                                    <a href="/articles/<?php echo $article['id']; ?>/edit"
+                                                    <a href="<?php echo BASE_PATH; ?>/articles/<?php echo $article['id']; ?>/edit"
                                                         class="btn btn-outline-primary" title="Modifier">
                                                         <!-- <i class="bi bi-pencil"></i> -->
-                                                         Modifer
+                                                        Modifer
                                                     </a>
 
                                                     <!-- Bouton Supprimer -->
-                                                    <form method="POST" action="/articles/<?php echo $article['id']; ?>/delete"
+                                                    <form method="POST"
+                                                        action="<?php echo BASE_PATH; ?>/articles/<?php echo $article['id']; ?>/delete"
                                                         style="display: inline;"
                                                         onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
                                                         <button type="submit" class="btn btn-outline-danger btn-sm"

@@ -3,7 +3,7 @@
         <div class="col-12">
             <!-- En-tete -->
             <div class="mb-4">
-                <a href="/needs/restants" class="btn btn-sm btn-outline-secondary mb-3">
+                <a href="<?php echo BASE_PATH; ?>/needs/restants" class="btn btn-sm btn-outline-secondary mb-3">
                     <i class="bi bi-arrow-left"></i> Retour aux besoins restants
                 </a>
                 <h2 class="mb-1">
@@ -85,19 +85,14 @@
                 <div class="card-body">
                     <form id="formAchat">
                         <input type="hidden" name="besoin_id" id="besoin_id" value="<?php echo $besoin['id'] ?? 0; ?>">
-                        
+
                         <div class="mb-3">
                             <label for="quantite" class="form-label fw-bold">
                                 Quantite a acheter <span class="text-danger">*</span>
                             </label>
-                            <input type="number" 
-                                   class="form-control form-control-lg" 
-                                   id="quantite" 
-                                   name="quantite" 
-                                   min="1" 
-                                   max="<?php echo $besoin['quantite'] ?? 0; ?>"
-                                   value="<?php echo $besoin['quantite'] ?? 0; ?>"
-                                   required>
+                            <input type="number" class="form-control form-control-lg" id="quantite" name="quantite"
+                                min="1" max="<?php echo $besoin['quantite'] ?? 0; ?>"
+                                value="<?php echo $besoin['quantite'] ?? 0; ?>" required>
                             <div class="form-text">
                                 Maximum: <?php echo number_format($besoin['quantite'] ?? 0); ?> unites
                             </div>
@@ -107,15 +102,9 @@
                             <label for="frais_pourcent" class="form-label fw-bold">
                                 Taux de frais d'achat (%) <span class="text-danger">*</span>
                             </label>
-                            <input type="number" 
-                                   class="form-control form-control-lg" 
-                                   id="frais_pourcent" 
-                                   name="frais_pourcent" 
-                                   min="0" 
-                                   max="100"
-                                   step="0.1"
-                                   value="<?php echo $frais_achat ?? 10; ?>"
-                                   required>
+                            <input type="number" class="form-control form-control-lg" id="frais_pourcent"
+                                name="frais_pourcent" min="0" max="100" step="0.1"
+                                value="<?php echo $frais_achat ?? 10; ?>" required>
                             <div class="form-text">
                                 Pourcentage de frais applique sur le montant de l'achat (0-100%)
                             </div>
@@ -179,98 +168,99 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const btnSimuler = document.getElementById('btnSimuler');
-    const btnValider = document.getElementById('btnValider');
-    const zoneSimulation = document.getElementById('zoneSimulation');
-    const zoneErreur = document.getElementById('zoneErreur');
-    
-    btnSimuler.addEventListener('click', function() {
-        const besoin_id = document.getElementById('besoin_id').value;
-        const quantite = document.getElementById('quantite').value;
-        const frais_pourcent = document.getElementById('frais_pourcent').value;
-        
-        if (!quantite || quantite <= 0) {
-            afficherErreur('Veuillez entrer une quantite valide');
-            return;
-        }
-        
-        if (frais_pourcent === '' || frais_pourcent < 0 || frais_pourcent > 100) {
-            afficherErreur('Veuillez entrer un taux de frais valide (0-100%)');
-            return;
-        }
-        
-        // Appel Ajax pour simuler
-        fetch('/achats/simuler', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `besoin_id=${besoin_id}&quantite=${quantite}&frais_pourcent=${frais_pourcent}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                afficherSimulation(data.data);
-                btnValider.disabled = false;
-            } else {
-                afficherErreur(data.message);
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnSimuler = document.getElementById('btnSimuler');
+        const btnValider = document.getElementById('btnValider');
+        const zoneSimulation = document.getElementById('zoneSimulation');
+        const zoneErreur = document.getElementById('zoneErreur');
+
+        btnSimuler.addEventListener('click', function () {
+            const besoin_id = document.getElementById('besoin_id').value;
+            const quantite = document.getElementById('quantite').value;
+            const frais_pourcent = document.getElementById('frais_pourcent').value;
+
+            if (!quantite || quantite <= 0) {
+                afficherErreur('Veuillez entrer une quantite valide');
+                return;
             }
-        })
-        .catch(error => {
-            afficherErreur('Erreur de communication: ' + error.message);
-        });
-    });
-    
-    btnValider.addEventListener('click', function() {
-        if (!confirm('Confirmer l\'achat de cet article ?\\n\\nCette action va debiter les dons en argent et ajouter l\'article au stock.')) {
-            return;
-        }
-        
-        const besoin_id = document.getElementById('besoin_id').value;
-        const quantite = document.getElementById('quantite').value;
-        const frais_pourcent = document.getElementById('frais_pourcent').value;
-        
-        btnValider.disabled = true;
-        btnValider.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Traitement...';
-        
-        fetch('/achats/valider', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `besoin_id=${besoin_id}&quantite=${quantite}&frais_pourcent=${frais_pourcent}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Achat effectue avec succes !\\nMontant: ' + data.data.montant_total.toFixed(2) + ' MAD');
-                window.location.href = '/needs/restants';
-            } else {
-                afficherErreur(data.message);
-                btnValider.disabled = false;
-                btnValider.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Valider l\'achat';
+
+            if (frais_pourcent === '' || frais_pourcent < 0 || frais_pourcent > 100) {
+                afficherErreur('Veuillez entrer un taux de frais valide (0-100%)');
+                return;
             }
-        })
-        .catch(error => {
-            afficherErreur('Erreur: ' + error.message);
-            btnValider.disabled = false;
-            btnValider.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Valider l\'achat';
+
+            // Appel Ajax pour simuler
+            const basePath = '<?php echo BASE_PATH; ?>';
+            fetch(basePath + '/achats/simuler', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `besoin_id=${besoin_id}&quantite=${quantite}&frais_pourcent=${frais_pourcent}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        afficherSimulation(data.data);
+                        btnValider.disabled = false;
+                    } else {
+                        afficherErreur(data.message);
+                    }
+                })
+                .catch(error => {
+                    afficherErreur('Erreur de communication: ' + error.message);
+                });
         });
+
+        btnValider.addEventListener('click', function () {
+            if (!confirm('Confirmer l\'achat de cet article ?\\n\\nCette action va debiter les dons en argent et ajouter l\'article au stock.')) {
+                return;
+            }
+
+            const besoin_id = document.getElementById('besoin_id').value;
+            const quantite = document.getElementById('quantite').value;
+            const frais_pourcent = document.getElementById('frais_pourcent').value;
+
+            btnValider.disabled = true;
+            btnValider.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Traitement...';
+
+            fetch(basePath + '/achats/valider', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `besoin_id=${besoin_id}&quantite=${quantite}&frais_pourcent=${frais_pourcent}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Achat effectue avec succes !\\nMontant: ' + data.data.montant_total.toFixed(2) + ' MAD');
+                        window.location.href = '/needs/restants';
+                    } else {
+                        afficherErreur(data.message);
+                        btnValider.disabled = false;
+                        btnValider.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Valider l\'achat';
+                    }
+                })
+                .catch(error => {
+                    afficherErreur('Erreur: ' + error.message);
+                    btnValider.disabled = false;
+                    btnValider.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Valider l\'achat';
+                });
+        });
+
+        function afficherSimulation(data) {
+            zoneErreur.style.display = 'none';
+            document.getElementById('sim_sous_total').textContent = data.sous_total.toFixed(2);
+            document.getElementById('sim_frais_pourcent').textContent = data.frais_pourcent.toFixed(0);
+            document.getElementById('sim_frais').textContent = data.frais.toFixed(2);
+            document.getElementById('sim_montant_total').textContent = data.montant_total.toFixed(2);
+            document.getElementById('sim_solde_actuel').textContent = data.solde_actuel.toFixed(2);
+            document.getElementById('sim_solde_apres').textContent = data.solde_apres.toFixed(2);
+            zoneSimulation.style.display = 'block';
+        }
+
+        function afficherErreur(message) {
+            zoneSimulation.style.display = 'none';
+            document.getElementById('messageErreur').textContent = message;
+            zoneErreur.style.display = 'block';
+            btnValider.disabled = true;
+        }
     });
-    
-    function afficherSimulation(data) {
-        zoneErreur.style.display = 'none';
-        document.getElementById('sim_sous_total').textContent = data.sous_total.toFixed(2);
-        document.getElementById('sim_frais_pourcent').textContent = data.frais_pourcent.toFixed(0);
-        document.getElementById('sim_frais').textContent = data.frais.toFixed(2);
-        document.getElementById('sim_montant_total').textContent = data.montant_total.toFixed(2);
-        document.getElementById('sim_solde_actuel').textContent = data.solde_actuel.toFixed(2);
-        document.getElementById('sim_solde_apres').textContent = data.solde_apres.toFixed(2);
-        zoneSimulation.style.display = 'block';
-    }
-    
-    function afficherErreur(message) {
-        zoneSimulation.style.display = 'none';
-        document.getElementById('messageErreur').textContent = message;
-        zoneErreur.style.display = 'block';
-        btnValider.disabled = true;
-    }
-});
 </script>

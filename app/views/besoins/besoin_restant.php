@@ -7,7 +7,7 @@
                     <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
                     Besoins Restants
                 </h2>
-                <a href="/achats/simuler-global" class="btn btn-warning">
+                <a href="<?php echo BASE_PATH; ?>/achats/simuler-global" class="btn btn-warning">
                     <i class="bi bi-calculator"></i> Simuler achats
                 </a>
             </div>
@@ -19,16 +19,17 @@
                         <div class="text-center py-5">
                             <i class="bi bi-check-circle" style="font-size: 3rem; color: #28a745;"></i>
                             <p class="text-success mt-3 fs-5">Aucun besoin restant ! Tous les besoins sont satisfaits.</p>
-                            <a href="/needs/list" class="btn btn-primary mt-2">
+                            <a href="<?php echo BASE_PATH; ?>/needs/list" class="btn btn-primary mt-2">
                                 <i class="bi bi-list"></i> Voir tous les besoins
                             </a>
                         </div>
                     <?php else: ?>
                         <div class="alert alert-info mb-3">
                             <i class="bi bi-info-circle me-2"></i>
-                            Cette page affiche uniquement les besoins <strong>non satisfaits</strong> (Ouvert ou Partiellement satisfait).
+                            Cette page affiche uniquement les besoins <strong>non satisfaits</strong> (Ouvert ou
+                            Partiellement satisfait).
                         </div>
-                        
+
                         <div class="table-responsive">
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="table-dark">
@@ -47,15 +48,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($besoins as $b): 
+                                    <?php foreach ($besoins as $b):
                                         $qteInit = $b['quantite_initiale'] ?? $b['quantite'];
                                         $qteReste = $b['quantite'];
                                         $prixUnit = $b['prix_unitaire'] ?? 0;
                                         $statusClass = 'secondary';
-                                        if (($b['status_id'] ?? 1) == 3) $statusClass = 'success';
-                                        elseif (($b['status_id'] ?? 1) == 2) $statusClass = 'warning';
-                                        elseif (($b['status_id'] ?? 1) == 1) $statusClass = 'danger';
-                                    ?>
+                                        if (($b['status_id'] ?? 1) == 3)
+                                            $statusClass = 'success';
+                                        elseif (($b['status_id'] ?? 1) == 2)
+                                            $statusClass = 'warning';
+                                        elseif (($b['status_id'] ?? 1) == 1)
+                                            $statusClass = 'danger';
+                                        ?>
                                         <tr>
                                             <td><?php echo htmlspecialchars($b['id']); ?></td>
                                             <td><?php echo htmlspecialchars($b['date_besoin'] ?? ''); ?></td>
@@ -95,9 +99,8 @@
                                             </td>
                                             <td class="text-center">
                                                 <?php if ($qteReste > 0): ?>
-                                                    <a href="/achats/form/<?php echo $b['id']; ?>" 
-                                                       class="btn btn-sm btn-success" 
-                                                       title="Acheter cet article">
+                                                    <a href="<?php echo BASE_PATH; ?>/achats/form/<?php echo $b['id']; ?>"
+                                                        class="btn btn-sm btn-success" title="Acheter cet article">
                                                         <i class="bi bi-cart-plus"></i> Acheter
                                                     </a>
                                                 <?php else: ?>
@@ -125,9 +128,9 @@
                                     <div class="card bg-light">
                                         <div class="card-body text-center">
                                             <h5 class="mb-0">
-                                                <?php 
-                                                    $totalQte = array_sum(array_column($besoins, 'quantite'));
-                                                    echo number_format($totalQte);
+                                                <?php
+                                                $totalQte = array_sum(array_column($besoins, 'quantite'));
+                                                echo number_format($totalQte);
                                                 ?>
                                             </h5>
                                             <small class="text-muted">Quantite totale restante</small>
@@ -138,12 +141,12 @@
                                     <div class="card bg-light">
                                         <div class="card-body text-center">
                                             <h5 class="mb-0">
-                                                <?php 
-                                                    $totalValeur = 0;
-                                                    foreach ($besoins as $b) {
-                                                        $totalValeur += ($b['quantite'] ?? 0) * ($b['prix_unitaire'] ?? 0);
-                                                    }
-                                                    echo number_format($totalValeur, 2);
+                                                <?php
+                                                $totalValeur = 0;
+                                                foreach ($besoins as $b) {
+                                                    $totalValeur += ($b['quantite'] ?? 0) * ($b['prix_unitaire'] ?? 0);
+                                                }
+                                                echo number_format($totalValeur, 2);
                                                 ?> MAD
                                             </h5>
                                             <small class="text-muted">Valeur totale restante</small>
@@ -156,7 +159,8 @@
                         <!-- Note explicative -->
                         <div class="mt-3 alert alert-secondary small">
                             <i class="bi bi-lightbulb me-2"></i>
-                            <strong>Astuce:</strong> Cliquez sur "Acheter" pour utiliser les dons en argent disponibles pour acquerir cet article.
+                            <strong>Astuce:</strong> Cliquez sur "Acheter" pour utiliser les dons en argent disponibles pour
+                            acquerir cet article.
                             Le bouton "Simuler achats" permet de voir une simulation globale des achats possibles.
                         </div>
                     <?php endif; ?>

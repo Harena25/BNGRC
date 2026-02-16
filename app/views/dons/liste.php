@@ -81,14 +81,15 @@
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group">
                                                     <!-- Bouton Modifier -->
-                                                    <a href="/dons/<?php echo $don['id']; ?>/edit"
+                                                    <a href="<?php echo BASE_PATH; ?>/dons/<?php echo $don['id']; ?>/edit"
                                                         class="btn btn-outline-primary" title="Modifier">
                                                         <!-- <i class="bi bi-pencil"></i> -->
-                                                         Modifer
+                                                        Modifer
                                                     </a>
 
                                                     <!-- Bouton Supprimer -->
-                                                    <form method="POST" action="/dons/<?php echo $don['id']; ?>/delete"
+                                                    <form method="POST"
+                                                        action="<?php echo BASE_PATH; ?>/dons/<?php echo $don['id']; ?>/delete"
                                                         style="display: inline;"
                                                         onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce don ?');">
                                                         <button type="submit" class="btn btn-outline-danger btn-sm"

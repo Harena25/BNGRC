@@ -19,7 +19,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <form action="/needs" method="POST">
+                    <form action="<?php echo BASE_PATH; ?>/needs" method="POST">
 
                         <!-- Ville -->
                         <div class="mb-3">
@@ -79,7 +79,7 @@
 
                         <!-- Boutons -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="/needs/list" class="btn btn-secondary">
+                            <a href="<?php echo BASE_PATH; ?>/needs/list" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Retour
                             </a>
                             <button type="submit" class="btn btn-primary">

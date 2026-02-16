@@ -5,7 +5,7 @@ $stats = $stats ?? ['total' => 0, 'quantite' => 0, 'valeur' => 0];
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0"><i class="bi bi-clock-history me-2"></i>Historique des distributions</h2>
-    <a href="/autoDistribution?mode=simulate" class="btn btn-primary">
+    <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate" class="btn btn-primary">
         <i class="bi bi-play-fill me-1"></i>Nouvelle allocation
     </a>
 </div>
@@ -82,73 +82,80 @@ $stats = $stats ?? ['total' => 0, 'quantite' => 0, 'valeur' => 0];
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($distributions as $d): 
-                        $valeurLigne = ($d['quantite_distribuee'] ?? 0) * ($d['prix_unitaire'] ?? 0);
-                        $statusClass = 'secondary';
-                        if (($d['status_id'] ?? 0) == 3) $statusClass = 'success';
-                        elseif (($d['status_id'] ?? 0) == 2) $statusClass = 'warning';
-                        elseif (($d['status_id'] ?? 0) == 1) $statusClass = 'danger';
-                    ?>
-                        <tr>
-                            <td class="text-center"><small class="text-muted"><?php echo $d['id']; ?></small></td>
-                            <td>
-                                <i class="bi bi-calendar-event me-1 text-muted"></i>
-                                <?php echo date('d/m/Y', strtotime($d['date_distribution'])); ?>
-                                <small class="text-muted d-block"><?php echo date('H:i', strtotime($d['date_distribution'])); ?></small>
-                            </td>
-                            <td>
-                                <span class="badge bg-secondary"><?php echo htmlspecialchars($d['region_name'] ?? '-'); ?></span>
-                            </td>
-                            <td>
-                                <i class="bi bi-geo-alt text-primary me-1"></i>
-                                <strong><?php echo htmlspecialchars($d['ville_name'] ?? '-'); ?></strong>
-                            </td>
-                            <td>
-                                <i class="bi bi-box text-info me-1"></i>
-                                <?php echo htmlspecialchars($d['article_name'] ?? '-'); ?>
-                            </td>
-                            <td>
-                                <span class="badge bg-light text-dark border">
-                                    <?php echo htmlspecialchars($d['categorie_name'] ?? '-'); ?>
-                                </span>
-                            </td>
-                            <td class="text-end">
-                                <strong class="text-success"><?php echo number_format($d['quantite_distribuee']); ?></strong>
-                            </td>
-                            <td class="text-end">
-                                <?php if (($d['status_id'] ?? 0) == 2): ?>
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="bi bi-exclamation-triangle me-1"></i><?php echo number_format($d['besoin_reste'] ?? 0); ?>
+                        <?php foreach ($distributions as $d):
+                            $valeurLigne = ($d['quantite_distribuee'] ?? 0) * ($d['prix_unitaire'] ?? 0);
+                            $statusClass = 'secondary';
+                            if (($d['status_id'] ?? 0) == 3)
+                                $statusClass = 'success';
+                            elseif (($d['status_id'] ?? 0) == 2)
+                                $statusClass = 'warning';
+                            elseif (($d['status_id'] ?? 0) == 1)
+                                $statusClass = 'danger';
+                            ?>
+                            <tr>
+                                <td class="text-center"><small class="text-muted"><?php echo $d['id']; ?></small></td>
+                                <td>
+                                    <i class="bi bi-calendar-event me-1 text-muted"></i>
+                                    <?php echo date('d/m/Y', strtotime($d['date_distribution'])); ?>
+                                    <small
+                                        class="text-muted d-block"><?php echo date('H:i', strtotime($d['date_distribution'])); ?></small>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge bg-secondary"><?php echo htmlspecialchars($d['region_name'] ?? '-'); ?></span>
+                                </td>
+                                <td>
+                                    <i class="bi bi-geo-alt text-primary me-1"></i>
+                                    <strong><?php echo htmlspecialchars($d['ville_name'] ?? '-'); ?></strong>
+                                </td>
+                                <td>
+                                    <i class="bi bi-box text-info me-1"></i>
+                                    <?php echo htmlspecialchars($d['article_name'] ?? '-'); ?>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        <?php echo htmlspecialchars($d['categorie_name'] ?? '-'); ?>
                                     </span>
-                                <?php elseif (($d['status_id'] ?? 0) == 3): ?>
-                                    <span class="text-success"><i class="bi bi-check-circle"></i> 0</span>
-                                <?php else: ?>
-                                    <span class="text-muted">-</span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-end">
-                                <small><?php echo number_format($d['prix_unitaire'] ?? 0, 0, ',', ' '); ?> Ar</small>
-                            </td>
-                            <td class="text-end">
-                                <strong><?php echo number_format($valeurLigne, 0, ',', ' '); ?> Ar</strong>
-                            </td>
-                            <td>
-                                <?php if (!empty($d['date_besoin'])): ?>
-                                    <small class="text-muted">
-                                        <i class="bi bi-calendar3 me-1"></i>
-                                        <?php echo date('d/m/Y', strtotime($d['date_besoin'])); ?>
-                                    </small>
-                                <?php else: ?>
-                                    <small class="text-muted">-</small>
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge bg-<?php echo $statusClass; ?>">
-                                    <?php echo htmlspecialchars($d['status_name'] ?? 'N/A'); ?>
-                                </span>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                                </td>
+                                <td class="text-end">
+                                    <strong
+                                        class="text-success"><?php echo number_format($d['quantite_distribuee']); ?></strong>
+                                </td>
+                                <td class="text-end">
+                                    <?php if (($d['status_id'] ?? 0) == 2): ?>
+                                        <span class="badge bg-warning text-dark">
+                                            <i
+                                                class="bi bi-exclamation-triangle me-1"></i><?php echo number_format($d['besoin_reste'] ?? 0); ?>
+                                        </span>
+                                    <?php elseif (($d['status_id'] ?? 0) == 3): ?>
+                                        <span class="text-success"><i class="bi bi-check-circle"></i> 0</span>
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-end">
+                                    <small><?php echo number_format($d['prix_unitaire'] ?? 0, 0, ',', ' '); ?> Ar</small>
+                                </td>
+                                <td class="text-end">
+                                    <strong><?php echo number_format($valeurLigne, 0, ',', ' '); ?> Ar</strong>
+                                </td>
+                                <td>
+                                    <?php if (!empty($d['date_besoin'])): ?>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar3 me-1"></i>
+                                            <?php echo date('d/m/Y', strtotime($d['date_besoin'])); ?>
+                                        </small>
+                                    <?php else: ?>
+                                        <small class="text-muted">-</small>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-<?php echo $statusClass; ?>">
+                                        <?php echo htmlspecialchars($d['status_name'] ?? 'N/A'); ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>

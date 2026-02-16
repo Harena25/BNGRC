@@ -79,8 +79,8 @@ class AchatsRepository
     }
 
     /**
-     * Récupérer les villes qui ont encore des besoins restants achetables
-     * (besoin_restant - stock_disponible - deja_achete > 0)
+     * Récupérer les villes qui ont encore des besoins non satisfaits
+     * Le calcul de quantité achetable se fait dans getArticlesAchetablesParVille()
      */
     public function getVillesAvecBesoinsRestants(): array
     {
@@ -94,16 +94,9 @@ class AchatsRepository
             JOIN bn_ville v ON v.id = b.ville_id
             JOIN bn_region r ON r.id = v.region_id
             JOIN bn_article a ON a.id = b.article_id
-            LEFT JOIN bn_stock s ON s.article_id = b.article_id
-            LEFT JOIN (
-                SELECT ville_id, article_id, SUM(quantite) AS total_achete
-                FROM bn_achats
-                GROUP BY ville_id, article_id
-            ) ach ON ach.ville_id = b.ville_id AND ach.article_id = b.article_id
             WHERE b.status_id != 3
               AND a.categorie_id != 3
-            GROUP BY v.id, v.libelle, v.region_id, r.libelle, b.article_id
-            HAVING SUM(b.quantite) - LEAST(COALESCE(MAX(s.quantite_stock), 0), SUM(b.quantite)) - COALESCE(MAX(ach.total_achete), 0) > 0
+              AND b.quantite > 0
             ORDER BY r.libelle ASC, v.libelle ASC
         ";
 
@@ -125,32 +118,39 @@ class AchatsRepository
                 c.libelle AS categorie_name,
                 a.prix_unitaire,
                 SUM(b.quantite) AS besoin_restant,
-                COALESCE(MAX(s.quantite_stock), 0) AS stock_disponible,
-                COALESCE(MAX(ach.total_achete), 0) AS deja_achete,
+                COALESCE(s.quantite_stock, 0) AS stock_disponible,
+                COALESCE(ach.total_achete, 0) AS deja_achete,
                 GREATEST(0, 
                     SUM(b.quantite) 
-                    - LEAST(COALESCE(MAX(s.quantite_stock), 0), SUM(b.quantite)) 
-                    - COALESCE(MAX(ach.total_achete), 0)
+                    - LEAST(COALESCE(s.quantite_stock, 0), SUM(b.quantite)) 
+                    - COALESCE(ach.total_achete, 0)
                 ) AS quantite_achetable
             FROM bn_besoin b
             JOIN bn_article a ON a.id = b.article_id
             JOIN bn_categorie c ON c.id = a.categorie_id
             LEFT JOIN bn_stock s ON s.article_id = b.article_id
             LEFT JOIN (
-                SELECT ville_id, article_id, SUM(quantite) AS total_achete
+                SELECT article_id, SUM(quantite) AS total_achete
                 FROM bn_achats
-                GROUP BY ville_id, article_id
-            ) ach ON ach.ville_id = b.ville_id AND ach.article_id = b.article_id
+                WHERE ville_id = :ville_id
+                GROUP BY article_id
+            ) ach ON ach.article_id = b.article_id
             WHERE b.ville_id = :ville_id
               AND b.status_id != 3
               AND a.categorie_id != 3
-            GROUP BY a.id, a.libelle, c.libelle, a.prix_unitaire
-            HAVING quantite_achetable > 0
+              AND b.quantite > 0
+            GROUP BY a.id, a.libelle, c.libelle, a.prix_unitaire, s.quantite_stock, ach.total_achete
+            HAVING besoin_restant > 0
             ORDER BY c.libelle, a.libelle
         ";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':ville_id' => $villeId]);
-        return $stmt->fetchAll();
+        
+        // Filtrer uniquement les articles avec quantite_achetable > 0
+        $results = $stmt->fetchAll();
+        return array_filter($results, function($article) {
+            return (int)$article['quantite_achetable'] > 0;
+        });
     }
 }

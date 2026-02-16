@@ -6,8 +6,17 @@
         <title>BNGRC</title>
         <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
         <style>
-                body { padding-top: 56px; }
-                .sidebar { min-height: calc(100vh - 112px); }
+            body { padding-top: 56px; }
+            /* Sidebar fixed on medium+ screens */
+            .sidebar { background: #f8f9fa; }
+            @media (min-width: 768px) {
+                .sidebar { position: fixed; top: 56px; left: 0; width: 220px; height: calc(100vh - 56px); overflow-y: auto; }
+                main { margin-left: 220px; }
+            }
+            @media (max-width: 767.98px) {
+                .sidebar { position: static; width: 100%; }
+                main { margin-left: 0; }
+            }
         </style>
 </head>
 <body>

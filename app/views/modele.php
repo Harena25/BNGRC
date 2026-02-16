@@ -286,45 +286,27 @@
         <button class="sidebar-toggle" id="sidebarToggle" aria-label="Menu">
             <i class="bi bi-list"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
-                <li class="nav-item"><a class="nav-link" href="/dons">Dons</a></li>
-                <li class="nav-item"><a class="nav-link" href="/distribution">Distribution</a></li>
-            </ul>
+        <a class="brand" href="/">
+            <i class="bi bi-heart-pulse-fill"></i> BNGRC
+        </a>
+        <div class="topbar-right">
+            <a href="/articles"><i class="bi bi-box-seam"></i> Articles</a>
+            <a href="/dons"><i class="bi bi-gift"></i> Dons</a>
+            <a href="/autoDistribution"><i class="bi bi-truck"></i> Distribution</a>
         </div>
     </header>
 
-<!-- Page layout -->
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <aside class="col-md-3 col-lg-2 bg-light sidebar p-3">
-            <h5>Menu</h5>
-            <ul class="nav flex-column">
-                <li class="nav-item"><a class="nav-link" href="/articles">Articles</a></li>
-                <li class="nav-item"><a class="nav-link" href="/dons">Dons</a></li>
-                <li class="nav-item"><a class="nav-link" href="/distribution">Distribution</a></li>
-            </ul>
-        </aside>
+    <!-- ═══ SIDEBAR ═══ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">Navigation</div>
+        <nav>
+            <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/needs') !== false ? 'active' : ''; ?>"
+                href="/needs">
+                <i class="bi bi-clipboard-heart"></i> Tableau de bord
+            </a>
 
-        <!-- Main content -->
-        <main class="col-md-9 col-lg-10 p-4">
-                <?php
-                    if (isset($pagename) && is_string($pagename)) {
-                        $viewFile = __DIR__ . '/' . $pagename;
-                        if (file_exists($viewFile)) {
-                            include $viewFile;
-                        } else {
-                            echo '<div class="alert alert-warning">Vue introuvable: ' . htmlspecialchars($pagename) . '</div>';
-                        }
-                    } elseif (isset($content)) {
-                        echo $content;
-                    }
-                ?>
-        </main>
-    </div>
-</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-header">Gestion</div>
 
             <a class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], '/articles') !== false ? 'active' : ''; ?>"
                 href="/articles">

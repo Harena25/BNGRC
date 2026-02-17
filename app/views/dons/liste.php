@@ -4,7 +4,7 @@
             <!-- En-tête avec titre et bouton d'ajout -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">Liste des dons</h2>
-                <a href="/dons/create" class="btn btn-primary">
+                <a href="<?= BASE_PATH; ?>/dons/create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Ajouter un don
                 </a>
             </div>
@@ -32,7 +32,7 @@
                         <div class="text-center py-5">
                             <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
                             <p class="text-muted mt-3">Aucun don enregistré pour le moment.</p>
-                            <a href="/dons/create" class="btn btn-primary mt-2">
+                            <a href="<?= BASE_PATH; ?>/dons/create" class="btn btn-primary mt-2">
                                 <i class="bi bi-plus-circle"></i> Ajouter le premier don
                             </a>
                         </div>

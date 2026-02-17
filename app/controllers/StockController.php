@@ -21,7 +21,7 @@ class StockController {
         }
         
         // Better query with price
-        $sql2 = "SELECT s.*, a.libelle AS article_name, a.prix_unitaire, c.libelle AS categorie_name,
+        $sql2 = "SELECT s.*, a.libelle AS article_name, a.prix_unitaire, a.categorie_id, c.libelle AS categorie_name,
                         (s.quantite_stock * a.prix_unitaire) AS valeur
                  FROM bn_stock s
                  LEFT JOIN bn_article a ON s.article_id = a.id

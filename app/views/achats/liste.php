@@ -8,7 +8,7 @@
                     <span class="badge bg-success fs-6 me-2">
                         Solde argent : <?php echo number_format($solde ?? 0, 2); ?> MAD
                     </span>
-                    <a href="<?php echo BASE_PATH; ?>/purchases" class="btn btn-primary">
+                    <a href="<?php echo BASE_PATH; ?>/needs/restants" class="btn btn-primary">
                         <i class="bi bi-cart-plus"></i> Nouvel achat
                     </a>
                 </div>

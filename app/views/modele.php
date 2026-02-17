@@ -179,6 +179,13 @@
                 </div>
 
             </div>
+
+            <div class="sidebar-divider"></div>
+            
+            <!-- Lien Réinitialiser (séparé) -->
+            <a class="nav-link text-danger" href="<?php echo BASE_PATH; ?>/dashboard/resetData" onclick="return confirm('Êtes-vous sûr de vouloir réinitialiser toutes les données ?');">
+                <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser données
+            </a>
         </nav>
     </aside>
 

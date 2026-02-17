@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="<?php echo BASE_PATH; ?>/assets/bootstrap-icons/bootstrap-icons.css">
     <link id="themeStylesheet" rel="stylesheet" href="<?php echo BASE_PATH; ?>/assets/style/style1.css">
     <link rel="stylesheet" href="<?php echo BASE_PATH; ?>/assets/style/sidebar-accordion.css">
+    <script>
+        // Configuration globale pour JavaScript
+        window.APP_BASE_PATH = '<?php echo BASE_PATH; ?>';
+    </script>
 </head>
 
 <body>

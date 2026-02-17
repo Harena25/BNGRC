@@ -25,7 +25,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <form method="POST" action="<?php echo isset($don) ? '/dons/' . $don['id'] : '/dons'; ?>">
+                    <form method="POST" action="<?php echo isset($don) ? BASE_PATH . '/dons/' . $don['id'] : BASE_PATH . '/dons'; ?>">
                         
                         <!-- Sélection Article -->
                         <div class="mb-3">
@@ -43,7 +43,7 @@
                             </select>
                             <div class="form-text">
                                 L'article n'existe pas ? 
-                                <a href="/articles/create" target="_blank" class="text-primary">Créer un nouvel article</a>
+                                <a href="<?= BASE_PATH; ?>/articles/create" target="_blank" class="text-primary">Créer un nouvel article</a>
                             </div>
                         </div>
 
@@ -74,7 +74,7 @@
 
                         <!-- Boutons -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="/dons" class="btn btn-secondary">
+                            <a href="<?= BASE_PATH; ?>/dons" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Retour
                             </a>
                             <button type="submit" class="btn btn-primary">

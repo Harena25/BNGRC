@@ -122,7 +122,7 @@
 
                         <!-- Boutons -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href=\"<?php echo BASE_PATH; ?>/purchases/list\" class=\"btn btn-secondary\">
+                            <a href="<?php echo BASE_PATH; ?>/purchases/list" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Liste des achats
                             </a>
                             <button type="submit" class="btn btn-primary" id="btnSubmit">

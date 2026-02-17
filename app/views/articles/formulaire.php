@@ -64,7 +64,7 @@
 
                         <!-- Boutons -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="/articles" class="btn btn-secondary">
+                            <a href="<?= BASE_PATH; ?>/articles" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Retour
                             </a>
                             <button type="submit" class="btn btn-primary">

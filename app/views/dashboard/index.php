@@ -95,7 +95,7 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
             <div class="card-body text-center">
                 <i class="bi bi-cash-stack fs-2 text-success"></i>
                 <h3 class="mb-0 mt-2"><?php echo number_format($stats['valeur_stock'], 0, ',', ' '); ?></h3>
-                <small class="text-muted">Stock (MAD)</small>
+                <small class="text-muted">Stock (Ar)</small>
             </div>
         </div>
     </div>

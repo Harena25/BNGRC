@@ -48,11 +48,11 @@
                         <tr>
                             <th><i class="bi bi-flag me-1"></i>Région</th>
                             <th><i class="bi bi-geo-alt me-1"></i>Ville</th>
-                            <th class="text-end"><i class="bi bi-currency-exchange me-1"></i>Besoin total (MAD)</th>
-                            <th class="text-end"><i class="bi bi-gift me-1"></i>Distribué (dons) (MAD)</th>
-                            <th class="text-end"><i class="bi bi-cart3 me-1"></i>Achats (MAD)</th>
-                            <th class="text-end"><i class="bi bi-check-circle me-1"></i>Montant satisfait (MAD)</th>
-                            <th class="text-end"><i class="bi bi-exclamation-triangle me-1"></i>Montant restant (MAD)
+                            <th class="text-end"><i class="bi bi-currency-exchange me-1"></i>Besoin total (Ar)</th>
+                            <th class="text-end"><i class="bi bi-gift me-1"></i>Distribué (dons) (Ar)</th>
+                            <th class="text-end"><i class="bi bi-cart3 me-1"></i>Achats (Ar)</th>
+                            <th class="text-end"><i class="bi bi-check-circle me-1"></i>Montant satisfait (Ar)</th>
+                            <th class="text-end"><i class="bi bi-exclamation-triangle me-1"></i>Montant restant (Ar)
                             </th>
                             <th class="text-end"><i class="bi bi-percent me-1"></i>Couverture (%)</th>
                         </tr>

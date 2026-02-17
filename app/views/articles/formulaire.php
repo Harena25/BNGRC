@@ -19,7 +19,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <form method="POST" action="<?php echo isset($article) ? '/articles/' . $article['id'] : '/articles'; ?>">
+                    <form method="POST" action="<?= BASE_PATH; ?>/articles<?= isset($article) ? '/' . $article['id'] : ''; ?>">
                         
                         <!-- Libellé -->
                         <div class="mb-3">

@@ -12,6 +12,9 @@ $stats = $stats ?? ['total' => 0, 'quantite' => 0, 'valeur' => 0];
         <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=quantite" class="btn btn-warning">
             <i class="bi bi-sort-numeric-up me-1"></i>Par Quantité
         </a>
+        <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=proportionnelle" class="btn btn-success">
+            <i class="bi bi-pie-chart me-1"></i>Proportionnelle
+        </a>
     </div>
 </div>
 

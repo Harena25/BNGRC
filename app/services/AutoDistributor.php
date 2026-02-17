@@ -10,6 +10,12 @@ class AutoDistributor {
 
     // Public entry: run the simple distribution
     public function run(): array {
+        // Mode proportionnel : logique différente
+        if ($this->sortMode === 'proportionnelle') {
+            return $this->runProportional();
+        }
+        
+        // Mode classique (date ou quantité)
         $this->pdo->beginTransaction();
         $log = [];
         try {
@@ -29,6 +35,12 @@ class AutoDistributor {
 
     // Simulate distribution without modifying database
     public function simulate(): array {
+        // Mode proportionnel : logique différente
+        if ($this->sortMode === 'proportionnelle') {
+            return $this->simulateProportional();
+        }
+        
+        // Mode classique (date ou quantité)
         $log = [];
         try {
             $besoins = $this->getPendingBesoins();
@@ -155,5 +167,184 @@ class AutoDistributor {
     private function reduceBesoin(int $besoin_id, int $remaining) {
         $stmt = $this->pdo->prepare("UPDATE bn_besoin SET quantite = ?, status_id = 2 WHERE id = ?");
         $stmt->execute([$remaining, $besoin_id]);
+    }
+
+    // ========================================================================
+    // DISTRIBUTION PROPORTIONNELLE
+    // ========================================================================
+
+    /**
+     * Distribution proportionnelle : chaque bénéficiaire reçoit une part
+     * proportionnelle à sa demande (avec arrondi inférieur)
+     */
+    public function runProportional(): array {
+        $this->pdo->beginTransaction();
+        $log = [];
+        $log[] = "=== DISTRIBUTION PROPORTIONNELLE ===";
+        
+        try {
+            // Récupérer tous les stocks disponibles
+            $stocks = $this->getAllStocksWithDetails();
+            
+            foreach ($stocks as $stock) {
+                $article_id = (int)$stock['article_id'];
+                $stock_disponible = (int)$stock['quantite_stock'];
+                $stock_id = (int)$stock['id'];
+                
+                if ($stock_disponible <= 0) {
+                    continue; // Pas de stock, on passe
+                }
+                
+                // Récupérer tous les besoins pour cet article
+                $besoins = $this->getBesoinsForArticle($article_id);
+                
+                if (empty($besoins)) {
+                    continue; // Pas de besoin, on passe
+                }
+                
+                // Calculer total des demandes
+                $total_demandes = 0;
+                foreach ($besoins as $besoin) {
+                    $total_demandes += (int)$besoin['quantite'];
+                }
+                
+                $log[] = "";
+                $log[] = "Article #{$article_id} - Stock disponible: {$stock_disponible}, Total demandes: {$total_demandes}";
+                
+                // Distribuer proportionnellement
+                $total_distribue = 0;
+                foreach ($besoins as $besoin) {
+                    $besoin_id = (int)$besoin['id'];
+                    $qte_demandee = (int)$besoin['quantite'];
+                    
+                    // Calcul proportionnel avec arrondi inférieur
+                    $ratio = $qte_demandee / $total_demandes;
+                    $qte_distribuee = floor($ratio * $stock_disponible);
+                    
+                    if ($qte_distribuee > 0) {
+                        // Créer la distribution
+                        $this->createDistribution($besoin_id, $qte_distribuee, $article_id);
+                        $total_distribue += $qte_distribuee;
+                        
+                        // Mettre à jour le besoin
+                        $qte_restante = $qte_demandee - $qte_distribuee;
+                        if ($qte_restante <= 0) {
+                            $this->markBesoinSatisfied($besoin_id);
+                            $log[] = "  Besoin #{$besoin_id}: {$qte_distribuee} distribué (satisfait totalement, ratio " . round($ratio * 100, 1) . "%)";
+                        } else {
+                            $this->reduceBesoin($besoin_id, $qte_restante);
+                            $log[] = "  Besoin #{$besoin_id}: {$qte_distribuee} distribué, reste {$qte_restante} (ratio " . round($ratio * 100, 1) . "%)";
+                        }
+                    } else {
+                        $log[] = "  Besoin #{$besoin_id}: 0 distribué (demande {$qte_demandee}, ratio " . round($ratio * 100, 1) . "% trop faible)";
+                    }
+                }
+                
+                // Mettre à jour le stock
+                $stock_restant = $stock_disponible - $total_distribue;
+                $this->updateStock($stock_id, $stock_restant);
+                $log[] = "  Total distribué: {$total_distribue}, Stock restant: {$stock_restant}";
+            }
+            
+            $this->pdo->commit();
+            $log[] = "";
+            $log[] = "Distribution proportionnelle terminée.";
+            return $log;
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            $log[] = 'Error: ' . $e->getMessage();
+            return $log;
+        }
+    }
+
+    /**
+     * Simulation de distribution proportionnelle (sans modifier la DB)
+     */
+    public function simulateProportional(): array {
+        $log = [];
+        $log[] = "=== SIMULATION DISTRIBUTION PROPORTIONNELLE ===";
+        
+        try {
+            // Récupérer tous les stocks disponibles
+            $stocks = $this->getAllStocksWithDetails();
+            
+            foreach ($stocks as $stock) {
+                $article_id = (int)$stock['article_id'];
+                $stock_disponible = (int)$stock['quantite_stock'];
+                
+                if ($stock_disponible <= 0) {
+                    continue;
+                }
+                
+                // Récupérer tous les besoins pour cet article
+                $besoins = $this->getBesoinsForArticle($article_id);
+                
+                if (empty($besoins)) {
+                    continue;
+                }
+                
+                // Calculer total des demandes
+                $total_demandes = 0;
+                foreach ($besoins as $besoin) {
+                    $total_demandes += (int)$besoin['quantite'];
+                }
+                
+                $log[] = "";
+                $log[] = "Article #{$article_id} - Stock disponible: {$stock_disponible}, Total demandes: {$total_demandes}";
+                
+                // Simuler distribution proportionnelle
+                $total_distribue = 0;
+                foreach ($besoins as $besoin) {
+                    $besoin_id = (int)$besoin['id'];
+                    $qte_demandee = (int)$besoin['quantite'];
+                    
+                    // Calcul proportionnel avec arrondi inférieur
+                    $ratio = $qte_demandee / $total_demandes;
+                    $qte_distribuee = floor($ratio * $stock_disponible);
+                    
+                    if ($qte_distribuee > 0) {
+                        $total_distribue += $qte_distribuee;
+                        $qte_restante = $qte_demandee - $qte_distribuee;
+                        
+                        if ($qte_restante <= 0) {
+                            $log[] = "  Besoin #{$besoin_id}: {$qte_distribuee} distribué (satisfait totalement, ratio " . round($ratio * 100, 1) . "%)";
+                        } else {
+                            $log[] = "  Besoin #{$besoin_id}: {$qte_distribuee} distribué, reste {$qte_restante} (ratio " . round($ratio * 100, 1) . "%)";
+                        }
+                    } else {
+                        $log[] = "  Besoin #{$besoin_id}: 0 distribué (demande {$qte_demandee}, ratio " . round($ratio * 100, 1) . "% trop faible)";
+                    }
+                }
+                
+                $stock_restant = $stock_disponible - $total_distribue;
+                $log[] = "  Total distribué: {$total_distribue}, Stock restant: {$stock_restant}";
+            }
+            
+            $log[] = "";
+            $log[] = "Simulation terminée (aucune modification effectuée).";
+            return $log;
+        } catch (Exception $e) {
+            $log[] = 'Error: ' . $e->getMessage();
+            return $log;
+        }
+    }
+
+    /**
+     * Récupérer tous les stocks avec détails (pour proportionnel)
+     */
+    private function getAllStocksWithDetails(): array {
+        $sql = "SELECT id, article_id, quantite_stock FROM bn_stock WHERE quantite_stock > 0";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupérer tous les besoins non satisfaits pour un article
+     */
+    private function getBesoinsForArticle(int $article_id): array {
+        $sql = "SELECT id, ville_id, quantite FROM bn_besoin WHERE article_id = ? AND status_id <> 3 ORDER BY id ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$article_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

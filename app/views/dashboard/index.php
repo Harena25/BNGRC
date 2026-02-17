@@ -105,18 +105,23 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <span><i class="bi bi-bar-chart-fill me-2"></i>Tableau de bord par ville</span>
-        <div class="btn-group" role="group">
-            <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=date" class="btn btn-sm btn-light">
-                <i class="bi bi-calendar-event"></i> Par Date
-            </a>
-            <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=quantite" class="btn btn-sm btn-warning">
-                <i class="bi bi-sort-numeric-up"></i> Par Quantité
+        <div>
+            <div class="btn-group me-2" role="group">
+                <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=date" class="btn btn-sm btn-light">
+                    <i class="bi bi-calendar-event"></i> Par Date
+                </a>
+                <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=quantite" class="btn btn-sm btn-warning">
+                    <i class="bi bi-sort-numeric-up"></i> Par Quantité
+                </a>
+                <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=proportionnelle" class="btn btn-sm btn-success">
+                    <i class="bi bi-pie-chart"></i> Proportionnelle
+                </a>
+            </div>
+            <a href="<?= BASE_PATH ?>/dashboard/resetData" class="btn btn-sm btn-light">
+                <i class="bi bi-arrow-clockwise"></i>
+                Réinitialiser données
             </a>
         </div>
-        <a href="<?= BASE_PATH ?>/dashboard/resetData" class="btn btn-sm btn-light">
-            <i class="bi bi-arrow-clockwise"></i>
-            Réinitialiser données
-        </a>
      
     </div>
     <div class="card-body p-0">

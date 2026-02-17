@@ -4,7 +4,22 @@ $totalSatisfied = $summary['satisfied'] ?? 0;
 $totalPartial = $summary['partial'] ?? 0;
 $totalSkipped = $summary['skipped'] ?? 0;
 $totalProcessed = $totalSatisfied + $totalPartial + $totalSkipped;
-$sortModeLabel = ($sortMode ?? 'date') === 'quantite' ? 'Par Quantité (du plus petit au plus grand)' : 'Par Date (ordre chronologique)';
+
+// Déterminer le libellé et l'icône selon le mode
+$currentSortMode = $sortMode ?? 'date';
+if ($currentSortMode === 'quantite') {
+    $sortModeLabel = 'Par Quantité (du plus petit au plus grand)';
+    $sortModeIcon = 'sort-numeric-up';
+    $badgeClass = 'bg-warning';
+} elseif ($currentSortMode === 'proportionnelle') {
+    $sortModeLabel = 'Distribution Proportionnelle (équitable)';
+    $sortModeIcon = 'pie-chart';
+    $badgeClass = 'bg-success';
+} else {
+    $sortModeLabel = 'Par Date (ordre chronologique)';
+    $sortModeIcon = 'calendar-event';
+    $badgeClass = 'bg-info';
+}
 ?>
 
 <div class="container py-4" style="max-width: 900px;">
@@ -16,8 +31,8 @@ $sortModeLabel = ($sortMode ?? 'date') === 'quantite' ? 'Par Quantité (du plus 
         </div>
         <h2 class="mb-1">Allocation automatique terminée</h2>
         <p class="text-muted">Voici le détail des opérations effectuées</p>
-        <span class="badge bg-info">
-            <i class="bi bi-<?php echo $sortMode === 'quantite' ? 'sort-numeric-up' : 'calendar-event'; ?> me-1"></i>
+        <span class="badge <?php echo $badgeClass; ?>">
+            <i class="bi bi-<?php echo $sortModeIcon; ?> me-1"></i>
             <?php echo $sortModeLabel; ?>
         </span>
     </div>

@@ -12,7 +12,7 @@ foreach ($stocks as $s) {
     <h2><i class="bi bi-box-seam me-2"></i>État du stock</h2>
     <div>
         <span class="badge bg-info fs-6 me-2">Total: <?php echo number_format($totalQty); ?> unités</span>
-        <span class="badge bg-success fs-6">Valeur: <?php echo number_format($totalVal, 0, ',', ' '); ?> MAD</span>
+        <span class="badge bg-success fs-6">Valeur: <?php echo number_format($totalVal, 0, ',', ' '); ?> Ar</span>
     </div>
 </div>
 

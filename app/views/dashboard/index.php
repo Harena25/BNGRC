@@ -3,6 +3,23 @@
 ?>
 
 <?php
+// Show reset data message if just ran
+if (isset($_SESSION['reset_success'])):
+    $isSuccess = $_SESSION['reset_success'];
+    $message = $_SESSION['reset_message'] ?? '';
+    unset($_SESSION['reset_success'], $_SESSION['reset_message']);
+    ?>
+    <div class="alert alert-<?php echo $isSuccess ? 'success' : 'danger'; ?> alert-dismissible fade show mb-4" role="alert">
+        <h5 class="alert-heading">
+            <i class="bi bi-<?php echo $isSuccess ? 'check-circle-fill' : 'exclamation-triangle-fill'; ?> me-2"></i>
+            <?php echo $isSuccess ? 'Réinitialisation réussie' : 'Erreur de réinitialisation'; ?>
+        </h5>
+        <p class="mb-0"><?php echo htmlspecialchars($message); ?></p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<?php
 // Show allocation result if just ran
 if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SESSION['allocation_log'])):
     $log = $_SESSION['allocation_log'];
@@ -19,6 +36,12 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 <?php endif; ?>
+
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-0">Tableau de bord</h1>
+    </div>
+</div>
 
 <!-- ═══ STATS CARDS ═══ -->
 <div class="row g-3 mb-4">
@@ -72,7 +95,7 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
             <div class="card-body text-center">
                 <i class="bi bi-cash-stack fs-2 text-success"></i>
                 <h3 class="mb-0 mt-2"><?php echo number_format($stats['valeur_stock'], 0, ',', ' '); ?></h3>
-                <small class="text-muted">Stock (MAD)</small>
+                <small class="text-muted">Stock (Ar)</small>
             </div>
         </div>
     </div>
@@ -90,6 +113,11 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
                 <i class="bi bi-sort-numeric-up"></i> Par Quantité
             </a>
         </div>
+        <a href="<?= BASE_PATH ?>/dashboard/resetData" class="btn btn-sm btn-light">
+            <i class="bi bi-arrow-clockwise"></i>
+            Réinitialiser données
+        </a>
+     
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

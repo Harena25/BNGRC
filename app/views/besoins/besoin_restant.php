@@ -75,7 +75,7 @@
                                             </td>
                                             <td class="text-end">
                                                 <span class="text-muted small">
-                                                    <?php echo number_format($prixUnit, 2); ?> MAD
+                                                    <?php echo number_format($prixUnit, 2); ?> Ar
                                                 </span>
                                             </td>
                                             <td class="text-end">
@@ -147,7 +147,7 @@
                                                     $totalValeur += ($b['quantite'] ?? 0) * ($b['prix_unitaire'] ?? 0);
                                                 }
                                                 echo number_format($totalValeur, 2);
-                                                ?> MAD
+                                                ?> Ar
                                             </h5>
                                             <small class="text-muted">Valeur totale restante</small>
                                         </div>

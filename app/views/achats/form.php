@@ -43,7 +43,7 @@
                         <div class="col-md-4">
                             <label class="text-muted small">Prix unitaire</label>
                             <div class="fw-bold text-primary">
-                                <?php echo number_format($besoin['prix_unitaire'] ?? 0, 2); ?> MAD
+                                <?php echo number_format($besoin['prix_unitaire'] ?? 0, 2); ?> Ar
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -72,7 +72,7 @@
                         <strong>Solde argent disponible:</strong>
                     </span>
                     <span class="fs-5 fw-bold">
-                        <?php echo number_format($solde_argent ?? 0, 2); ?> MAD
+                        <?php echo number_format($solde_argent ?? 0, 2); ?> Ar
                     </span>
                 </div>
             </div>
@@ -149,23 +149,23 @@
                         <tbody>
                             <tr>
                                 <td class="text-end fw-bold">Sous-total:</td>
-                                <td class="text-end"><span id="sim_sous_total">0.00</span> MAD</td>
+                                <td class="text-end"><span id="sim_sous_total">0.00</span> Ar</td>
                             </tr>
                             <tr>
                                 <td class="text-end fw-bold">Frais (<span id="sim_frais_pourcent">0</span>%):</td>
-                                <td class="text-end text-danger"><span id="sim_frais">0.00</span> MAD</td>
+                                <td class="text-end text-danger"><span id="sim_frais">0.00</span> Ar</td>
                             </tr>
                             <tr class="table-primary">
                                 <td class="text-end fw-bold fs-5">TOTAL:</td>
-                                <td class="text-end fw-bold fs-5"><span id="sim_montant_total">0.00</span> MAD</td>
+                                <td class="text-end fw-bold fs-5"><span id="sim_montant_total">0.00</span> Ar</td>
                             </tr>
                             <tr>
                                 <td class="text-end">Solde actuel:</td>
-                                <td class="text-end"><span id="sim_solde_actuel">0.00</span> MAD</td>
+                                <td class="text-end"><span id="sim_solde_actuel">0.00</span> Ar</td>
                             </tr>
                             <tr class="table-warning">
                                 <td class="text-end fw-bold">Solde apres achat:</td>
-                                <td class="text-end fw-bold"><span id="sim_solde_apres">0.00</span> MAD</td>
+                                <td class="text-end fw-bold"><span id="sim_solde_apres">0.00</span> Ar</td>
                             </tr>
                         </tbody>
                     </table>
@@ -250,7 +250,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Achat effectue avec succes !\\nMontant: ' + data.data.montant_total.toFixed(2) + ' MAD');
+                        alert('Achat effectue avec succes !\\nMontant: ' + data.data.montant_total.toFixed(2) + ' Ar');
                         window.location.href = '/needs/restants';
                     } else {
                         afficherErreur(data.message);

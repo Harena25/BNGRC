@@ -145,8 +145,32 @@
                     <i class="bi bi-check-circle me-2"></i>Resultat de la simulation
                 </div>
                 <div class="card-body">
+                    <!-- Zone stock si disponible -->
+                    <div id="zoneStockUtilisation" style="display: none;" class="mb-3">
+                        <div class="alert alert-info">
+                            <label for="stock_utilise" class="form-label fw-bold">
+                                <i class="bi bi-box-seam me-2"></i>Quantite de stock a utiliser
+                            </label>
+                            <input type="number" class="form-control form-control-lg" id="stock_utilise" 
+                                   min="0" max="0" value="0">
+                            <div class="form-text">
+                                Stock disponible: <span id="stock_dispo_label">0</span> unites (gratuit)
+                            </div>
+                        </div>
+                    </div>
+
                     <table class="table table-bordered mb-0">
                         <tbody>
+                            <!-- Ligne stock utilise (si disponible) -->
+                            <tr id="ligne_stock_utilise" style="display: none;">
+                                <td class="text-end fw-bold text-success">Stock utilise (gratuit):</td>
+                                <td class="text-end"><span id="sim_stock_utilise">0</span> unites</td>
+                            </tr>
+                            <!-- Ligne quantite a acheter -->
+                            <tr id="ligne_qte_acheter">
+                                <td class="text-end fw-bold">Quantite a acheter:</td>
+                                <td class="text-end"><span id="sim_qte_acheter">0</span> unites</td>
+                            </tr>
                             <tr>
                                 <td class="text-end fw-bold">Sous-total:</td>
                                 <td class="text-end"><span id="sim_sous_total">0.00</span> Ar</td>
@@ -156,7 +180,7 @@
                                 <td class="text-end text-danger"><span id="sim_frais">0.00</span> Ar</td>
                             </tr>
                             <tr class="table-primary">
-                                <td class="text-end fw-bold fs-5">TOTAL:</td>
+                                <td class="text-end fw-bold fs-5">TOTAL A PAYER:</td>
                                 <td class="text-end fw-bold fs-5"><span id="sim_montant_total">0.00</span> Ar</td>
                             </tr>
                             <tr>
@@ -194,6 +218,9 @@
         const btnValider = document.getElementById('btnValider');
         const zoneSimulation = document.getElementById('zoneSimulation');
         const zoneErreur = document.getElementById('zoneErreur');
+        const stockDisponible = <?php echo $stock_info ? ($stock_info['quantite_stock'] ?? 0) : 0; ?>;
+        
+        let simulationEnCours = null;
 
         btnSimuler.addEventListener('click', function () {
             const besoin_id = document.getElementById('besoin_id').value;
@@ -210,16 +237,36 @@
                 return;
             }
 
+            // Determiner stock a utiliser par defaut
+            const stockMaxUtilisable = Math.min(stockDisponible, parseInt(quantite));
+            const stock_utilise = stockMaxUtilisable;
+
             // Appel Ajax pour simuler
+            simulerAchat(besoin_id, quantite, frais_pourcent, stock_utilise);
+        });
+
+        // Listener sur changement stock utilise
+        document.getElementById('stock_utilise').addEventListener('input', function () {
+            const besoin_id = document.getElementById('besoin_id').value;
+            const quantite = document.getElementById('quantite').value;
+            const frais_pourcent = document.getElementById('frais_pourcent').value;
+            const stock_utilise = parseInt(this.value) || 0;
+
+            // Recalculer via AJAX
+            simulerAchat(besoin_id, quantite, frais_pourcent, stock_utilise);
+        });
+
+        function simulerAchat(besoin_id, quantite, frais_pourcent, stock_utilise) {
             fetch(basePath + '/achats/simuler', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `besoin_id=${besoin_id}&quantite=${quantite}&frais_pourcent=${frais_pourcent}`
+                body: `besoin_id=${besoin_id}&quantite=${quantite}&frais_pourcent=${frais_pourcent}&stock_utilise=${stock_utilise}`
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        afficherSimulation(data.data);
+                        simulationEnCours = data.data;
+                        afficherSimulation(data.data, quantite, stock_utilise);
                         btnValider.disabled = false;
                     } else {
                         afficherErreur(data.message);
@@ -228,7 +275,7 @@
                 .catch(error => {
                     afficherErreur('Erreur de communication: ' + error.message);
                 });
-        });
+        }
 
         btnValider.addEventListener('click', function () {
             if (!confirm('Confirmer l\'achat de cet article ?\\n\\nCette action va debiter les dons en argent et ajouter l\'article au stock.')) {
@@ -238,6 +285,7 @@
             const besoin_id = document.getElementById('besoin_id').value;
             const quantite = document.getElementById('quantite').value;
             const frais_pourcent = document.getElementById('frais_pourcent').value;
+            const stock_utilise = stockDisponible > 0 ? (parseInt(document.getElementById('stock_utilise').value) || 0) : 0;
 
             btnValider.disabled = true;
             btnValider.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Traitement...';
@@ -245,13 +293,13 @@
             fetch(basePath + '/achats/valider', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `besoin_id=${besoin_id}&quantite=${quantite}&frais_pourcent=${frais_pourcent}`
+                body: `besoin_id=${besoin_id}&quantite=${quantite}&frais_pourcent=${frais_pourcent}&stock_utilise=${stock_utilise}`
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         alert('Achat effectue avec succes !\\nMontant: ' + data.data.montant_total.toFixed(2) + ' Ar');
-                        window.location.href = '/needs/restants';
+                        window.location.href = basePath + '/needs/restants';
                     } else {
                         afficherErreur(data.message);
                         btnValider.disabled = false;
@@ -265,14 +313,41 @@
                 });
         });
 
-        function afficherSimulation(data) {
+        function afficherSimulation(data, quantiteTotale, stockUtilise) {
             zoneErreur.style.display = 'none';
+            
+            // Afficher zone stock si stock disponible
+            if (stockDisponible > 0) {
+                const zoneStockUtilisation = document.getElementById('zoneStockUtilisation');
+                const inputStockUtilise = document.getElementById('stock_utilise');
+                const stockMaxUtilisable = Math.min(stockDisponible, parseInt(quantiteTotale));
+                
+                inputStockUtilise.max = stockMaxUtilisable;
+                inputStockUtilise.value = stockUtilise;
+                document.getElementById('stock_dispo_label').textContent = stockMaxUtilisable;
+                
+                zoneStockUtilisation.style.display = 'block';
+                
+                // Afficher ligne stock utilise
+                document.getElementById('ligne_stock_utilise').style.display = '';
+                document.getElementById('sim_stock_utilise').textContent = stockUtilise;
+            } else {
+                document.getElementById('zoneStockUtilisation').style.display = 'none';
+                document.getElementById('ligne_stock_utilise').style.display = 'none';
+            }
+            
+            // Quantite a acheter
+            const qteAcheter = data.quantite_a_acheter || 0;
+            document.getElementById('sim_qte_acheter').textContent = qteAcheter;
+            
+            // Valeurs financieres
             document.getElementById('sim_sous_total').textContent = data.sous_total.toFixed(2);
             document.getElementById('sim_frais_pourcent').textContent = data.frais_pourcent.toFixed(0);
             document.getElementById('sim_frais').textContent = data.frais.toFixed(2);
             document.getElementById('sim_montant_total').textContent = data.montant_total.toFixed(2);
             document.getElementById('sim_solde_actuel').textContent = data.solde_actuel.toFixed(2);
             document.getElementById('sim_solde_apres').textContent = data.solde_apres.toFixed(2);
+            
             zoneSimulation.style.display = 'block';
         }
 

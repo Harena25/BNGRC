@@ -86,6 +86,7 @@ class AchatController
         $besoin_id = (int) ($_POST['besoin_id'] ?? 0);
         $quantite = (int) ($_POST['quantite'] ?? 0);
         $fraisAchat = (float) ($_POST['frais_pourcent'] ?? 10);
+        $stock_utilise = (int) ($_POST['stock_utilise'] ?? 0);
 
         // Validation
         if ($besoin_id <= 0 || $quantite <= 0) {
@@ -118,18 +119,35 @@ class AchatController
             return;
         }
 
-        // NOTE: L'achat est maintenant autorisé même si l'article existe en stock
-        // L'utilisateur est informé via l'interface
+        // Verifier stock utilise
+        $stockDisponible = 0;
+        if ($this->stockRepo->hasStock($besoin['article_id'])) {
+            $stockInfo = $this->stockRepo->findByArticleId($besoin['article_id']);
+            $stockDisponible = (int)$stockInfo['quantite_stock'];
+        }
+        
+        if ($stock_utilise > $stockDisponible) {
+            echo json_encode(['success' => false, 'message' => 'Stock utilise superieur au stock disponible']);
+            return;
+        }
+        
+        if ($stock_utilise > $quantite) {
+            echo json_encode(['success' => false, 'message' => 'Stock utilise superieur a la quantite demandee']);
+            return;
+        }
 
-        // Calculer le montant (fraisAchat deja recupere depuis POST)
+        // Calculer quantite a acheter (apres utilisation du stock)
+        $quantite_a_acheter = $quantite - $stock_utilise;
+
+        // Calculer le montant SEULEMENT pour la quantite a acheter
         $prixUnitaire = (float) $besoin['prix_unitaire'];
-        $sousTotal = $quantite * $prixUnitaire;
+        $sousTotal = $quantite_a_acheter * $prixUnitaire;
         $frais = $sousTotal * ($fraisAchat / 100);
         $montantTotal = $sousTotal + $frais;
 
-        // Verifier solde argent
+        // Verifier solde argent (seulement si achat necessaire)
         $soldeActuel = $this->stockRepo->getSoldeArgent();
-        if ($soldeActuel < $montantTotal) {
+        if ($quantite_a_acheter > 0 && $soldeActuel < $montantTotal) {
             echo json_encode([
                 'success' => false, 
                 'message' => sprintf('Solde insuffisant. Disponible: %.2f MAD, Requis: %.2f MAD', $soldeActuel, $montantTotal)
@@ -142,6 +160,8 @@ class AchatController
             'success' => true,
             'data' => [
                 'quantite' => $quantite,
+                'stock_utilise' => $stock_utilise,
+                'quantite_a_acheter' => $quantite_a_acheter,
                 'prix_unitaire' => $prixUnitaire,
                 'frais_pourcent' => $fraisAchat,
                 'sous_total' => $sousTotal,
@@ -163,6 +183,7 @@ class AchatController
         $besoin_id = (int) ($_POST['besoin_id'] ?? 0);
         $quantite = (int) ($_POST['quantite'] ?? 0);
         $fraisAchat = (float) ($_POST['frais_pourcent'] ?? 10);
+        $stock_utilise = (int) ($_POST['stock_utilise'] ?? 0);
 
         // Re-verification (securite)
         if ($besoin_id <= 0 || $quantite <= 0) {
@@ -195,46 +216,75 @@ class AchatController
                 throw new Exception('Quantite superieure au besoin restant');
             }
 
-            // NOTE: L'achat est autorisé même si l'article existe en stock
-            // Cela permet d'augmenter le stock disponible
-
-            // Calculer montant (fraisAchat deja recupere depuis POST)
-            $prixUnitaire = (float) $besoin['prix_unitaire'];
-            $sousTotal = $quantite * $prixUnitaire;
-            $frais = $sousTotal * ($fraisAchat / 100);
-            $montantTotal = $sousTotal + $frais;
-
-            $soldeActuel = $this->stockRepo->getSoldeArgent();
-            if ($soldeActuel < $montantTotal) {
-                throw new Exception(sprintf('Solde insuffisant. Disponible: %.2f MAD', $soldeActuel));
+            // Verifier stock disponible
+            $stockDisponible = 0;
+            if ($this->stockRepo->hasStock($besoin['article_id'])) {
+                $stockInfo = $this->stockRepo->findByArticleId($besoin['article_id']);
+                $stockDisponible = (int)$stockInfo['quantite_stock'];
+            }
+            
+            if ($stock_utilise > $stockDisponible) {
+                throw new Exception('Stock utilise superieur au stock disponible');
             }
 
-            // Executer l'achat
-            // 1. Debiter l'argent
-            $this->stockRepo->debitArgent($montantTotal);
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            // ETAPE 1 : UTILISER LE STOCK EXISTANT (GRATUIT)
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            if ($stock_utilise > 0) {
+                // Creer distribution depuis stock
+                $stmtDistrib = $this->pdo->prepare("INSERT INTO bn_distribution (besoin_id, quantite_distribuee, date_distribution, article_id) VALUES (?,?,?,?)");
+                $stmtDistrib->execute([$besoin_id, $stock_utilise, date('Y-m-d'), $besoin['article_id']]);
 
-            // 2. Enregistrer dans bn_achats
-            $this->achatsRepo->create(
-                (int) $besoin['ville_id'],
-                (int) $besoin['article_id'],
-                $quantite,
-                $prixUnitaire,
-                $fraisAchat,
-                $montantTotal,
-                date('Y-m-d')
-            );
+                // Retirer du stock
+                $this->stockRepo->upsertQuantity($besoin['article_id'], -$stock_utilise);
+            }
 
-            // 3. Ajouter au stock
-            $this->stockRepo->addStock($besoin['article_id'], $quantite);
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            // ETAPE 2 : ACHETER LE RESTE SI NECESSAIRE
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            $quantite_a_acheter = $quantite - $stock_utilise;
+            $montantTotal = 0;
 
-            // 4. Créer une distribution immédiate depuis le stock vers le besoin
-            $stmtDistrib = $this->pdo->prepare("INSERT INTO bn_distribution (besoin_id, quantite_distribuee, date_distribution, article_id) VALUES (?,?,?,?)");
-            $stmtDistrib->execute([$besoin_id, $quantite, date('Y-m-d'), $besoin['article_id']]);
+            if ($quantite_a_acheter > 0) {
+                // Calculer montant pour l'achat
+                $prixUnitaire = (float) $besoin['prix_unitaire'];
+                $sousTotal = $quantite_a_acheter * $prixUnitaire;
+                $frais = $sousTotal * ($fraisAchat / 100);
+                $montantTotal = $sousTotal + $frais;
 
-            // 5. Retirer du stock (distribution effectuée)
-            $this->stockRepo->upsertQuantity($besoin['article_id'], -$quantite);
+                $soldeActuel = $this->stockRepo->getSoldeArgent();
+                if ($soldeActuel < $montantTotal) {
+                    throw new Exception(sprintf('Solde insuffisant. Disponible: %.2f MAD', $soldeActuel));
+                }
 
-            // 6. Mettre à jour le besoin (quantite restante et status)
+                // 2.1. Debiter l'argent
+                $this->stockRepo->debitArgent($montantTotal);
+
+                // 2.2. Enregistrer dans bn_achats
+                $this->achatsRepo->create(
+                    (int) $besoin['ville_id'],
+                    (int) $besoin['article_id'],
+                    $quantite_a_acheter,
+                    $prixUnitaire,
+                    $fraisAchat,
+                    $montantTotal,
+                    date('Y-m-d')
+                );
+
+                // 2.3. Ajouter au stock
+                $this->stockRepo->addStock($besoin['article_id'], $quantite_a_acheter);
+
+                // 2.4. Creer distribution immediate depuis le stock vers le besoin
+                $stmtDistrib = $this->pdo->prepare("INSERT INTO bn_distribution (besoin_id, quantite_distribuee, date_distribution, article_id) VALUES (?,?,?,?)");
+                $stmtDistrib->execute([$besoin_id, $quantite_a_acheter, date('Y-m-d'), $besoin['article_id']]);
+
+                // 2.5. Retirer du stock (distribution effectuee)
+                $this->stockRepo->upsertQuantity($besoin['article_id'], -$quantite_a_acheter);
+            }
+
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            // ETAPE 3 : METTRE A JOUR LE BESOIN
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             $this->besoinsRepo->reduireParAchat(
                 (int) $besoin['ville_id'],
                 (int) $besoin['article_id'],
@@ -245,8 +295,10 @@ class AchatController
 
             echo json_encode([
                 'success' => true,
-                'message' => 'Achat effectue avec succes',
+                'message' => 'Operation effectuee avec succes',
                 'data' => [
+                    'stock_utilise' => $stock_utilise,
+                    'quantite_achetee' => $quantite_a_acheter,
                     'montant_total' => $montantTotal,
                     'quantite' => $quantite
                 ]

@@ -60,11 +60,18 @@ class AchatController
         // Recuperer le frais d'achat depuis la config
         $fraisAchat = defined('FRAIS_ACHAT_POURCENT') ? FRAIS_ACHAT_POURCENT : 10;
 
+        // Vérifier si l'article existe en stock
+        $stockInfo = null;
+        if ($this->stockRepo->hasStock($besoinDetail['article_id'])) {
+            $stockInfo = $this->stockRepo->findByArticleId($besoinDetail['article_id']);
+        }
+
         $pagename = 'achats/form.php';
         Flight::render('modele', [
             'besoin' => $besoinDetail,
             'solde_argent' => $soldeArgent,
             'frais_achat' => $fraisAchat,
+            'stock_info' => $stockInfo,
             'pagename' => $pagename
         ]);
     }
@@ -111,11 +118,8 @@ class AchatController
             return;
         }
 
-        // Verifier si l'article existe en stock
-        if ($this->stockRepo->hasStock($besoin['article_id'])) {
-            echo json_encode(['success' => false, 'message' => 'Cet article existe deja en stock. Utilisez d\'abord les dons existants.']);
-            return;
-        }
+        // NOTE: L'achat est maintenant autorisé même si l'article existe en stock
+        // L'utilisateur est informé via l'interface
 
         // Calculer le montant (fraisAchat deja recupere depuis POST)
         $prixUnitaire = (float) $besoin['prix_unitaire'];
@@ -191,9 +195,8 @@ class AchatController
                 throw new Exception('Quantite superieure au besoin restant');
             }
 
-            if ($this->stockRepo->hasStock($besoin['article_id'])) {
-                throw new Exception('Cet article existe deja en stock');
-            }
+            // NOTE: L'achat est autorisé même si l'article existe en stock
+            // Cela permet d'augmenter le stock disponible
 
             // Calculer montant (fraisAchat deja recupere depuis POST)
             $prixUnitaire = (float) $besoin['prix_unitaire'];
@@ -210,10 +213,7 @@ class AchatController
             // 1. Debiter l'argent
             $this->stockRepo->debitArgent($montantTotal);
 
-            // 2. Ajouter au stock
-            $this->stockRepo->addStock($besoin['article_id'], $quantite);
-
-            // 3. Enregistrer dans bn_achats
+            // 2. Enregistrer dans bn_achats
             $this->achatsRepo->create(
                 (int) $besoin['ville_id'],
                 (int) $besoin['article_id'],
@@ -224,7 +224,17 @@ class AchatController
                 date('Y-m-d')
             );
 
-            // 4. Mettre à jour le besoin (quantite restante et status)
+            // 3. Ajouter au stock
+            $this->stockRepo->addStock($besoin['article_id'], $quantite);
+
+            // 4. Créer une distribution immédiate depuis le stock vers le besoin
+            $stmtDistrib = $this->pdo->prepare("INSERT INTO bn_distribution (besoin_id, quantite_distribuee, date_distribution, article_id) VALUES (?,?,?,?)");
+            $stmtDistrib->execute([$besoin_id, $quantite, date('Y-m-d'), $besoin['article_id']]);
+
+            // 5. Retirer du stock (distribution effectuée)
+            $this->stockRepo->upsertQuantity($besoin['article_id'], -$quantite);
+
+            // 6. Mettre à jour le besoin (quantite restante et status)
             $this->besoinsRepo->reduireParAchat(
                 (int) $besoin['ville_id'],
                 (int) $besoin['article_id'],

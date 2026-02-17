@@ -77,6 +77,26 @@
                 </div>
             </div>
 
+            <!-- Information sur le stock disponible -->
+            <?php if ($stock_info): ?>
+                <div class="alert alert-warning mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="bi bi-box-seam me-2"></i>
+                            <strong>Stock disponible pour cet article:</strong>
+                        </span>
+                        <span class="fs-5 fw-bold">
+                            <?php echo number_format($stock_info['quantite_stock'] ?? 0, 0); ?> unités
+                        </span>
+                    </div>
+                    <hr class="my-2">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Cet article existe déjà en stock. Vous pouvez choisir d'acheter pour augmenter le stock.
+                    </small>
+                </div>
+            <?php endif; ?>
+
             <!-- Formulaire d'achat -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
@@ -169,6 +189,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const basePath = '<?php echo BASE_PATH; ?>';
         const btnSimuler = document.getElementById('btnSimuler');
         const btnValider = document.getElementById('btnValider');
         const zoneSimulation = document.getElementById('zoneSimulation');
@@ -190,7 +211,6 @@
             }
 
             // Appel Ajax pour simuler
-            const basePath = '<?php echo BASE_PATH; ?>';
             fetch(basePath + '/achats/simuler', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

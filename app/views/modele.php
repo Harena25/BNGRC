@@ -8,14 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="<?php echo BASE_PATH; ?>/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo BASE_PATH; ?>/assets/bootstrap-icons/bootstrap-icons.css">
     <link id="themeStylesheet" rel="stylesheet" href="<?php echo BASE_PATH; ?>/assets/style/style1.css">
     <link rel="stylesheet" href="<?php echo BASE_PATH; ?>/assets/style/sidebar-accordion.css">
     <script>
-        // Configuration globale pour JavaScript
         window.APP_BASE_PATH = '<?php echo BASE_PATH; ?>';
     </script>
 </head>
@@ -28,12 +27,20 @@
             <i class="bi bi-list"></i>
         </button>
         <a class="brand" href="<?php echo BASE_PATH; ?>/">
-            <i class="bi bi-heart-pulse-fill"></i> BNGRC
+            <span class="brand-icon"><i class="bi bi-heart-pulse-fill"></i></span>
+            <span class="brand-text">BNGRC</span>
+            <span class="brand-sub">Gestion des secours</span>
         </a>
         <div class="topbar-right">
-            <a href="<?php echo BASE_PATH; ?>/stock"><i class="bi bi-box-seam"></i> Stock</a>
-            <a href="<?php echo BASE_PATH; ?>/dons"><i class="bi bi-gift"></i> Dons</a>
-            <a href="<?php echo BASE_PATH; ?>/distribution"><i class="bi bi-truck"></i> Distribution</a>
+            <a href="<?php echo BASE_PATH; ?>/stock" class="topbar-link">
+                <i class="bi bi-box-seam"></i><span>Stock</span>
+            </a>
+            <a href="<?php echo BASE_PATH; ?>/dons" class="topbar-link">
+                <i class="bi bi-gift"></i><span>Dons</span>
+            </a>
+            <a href="<?php echo BASE_PATH; ?>/distribution" class="topbar-link">
+                <i class="bi bi-truck"></i><span>Distribution</span>
+            </a>
         </div>
     </header>
 
@@ -41,7 +48,6 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">Navigation</div>
         <nav>
-            <!-- Accordion Menu -->
             <div class="accordion accordion-flush" id="sidebarAccordion">
 
                 <!-- Section: Tableau de bord -->
@@ -198,11 +204,17 @@
 
     <!-- ═══ FOOTER ═══ -->
     <footer class="footer">
-        <i class="bi bi-heart-fill" style="color:var(--bonbon-3);"></i>
-        &copy; <?php echo date('Y'); ?> BNGRC &mdash; Suivi des collectes et distributions de dons
-        <p>RAKOTOARIVONY Harena Natolotra Sarobidy ETU-3940</p>
-        <p>FENOHERYLIANTSOA Ny Aina Andreane ETU-4199</p>
-        <p>FANEVA Jedidia ETU-4042</p>
+        <div class="footer-content">
+            <span class="footer-brand"><i class="bi bi-heart-pulse-fill"></i> BNGRC</span>
+            <span class="footer-copy">&copy; <?php echo date('Y'); ?> — Suivi des collectes et distributions</span>
+            <div class="footer-team">
+                <span>RAKOTOARIVONY Harena ETU-3940</span>
+                <span class="footer-sep">&bull;</span>
+                <span>FENOHERYLIANTSOA Ny Aina ETU-4199</span>
+                <span class="footer-sep">&bull;</span>
+                <span>FANEVA Jedidia ETU-4042</span>
+            </div>
+        </div>
     </footer>
 
     <script src="<?php echo BASE_PATH; ?>/assets/bootstrap/js/bootstrap.bundle.min.js"></script>

@@ -46,7 +46,6 @@ foreach ($stocks as $s) {
                                 <th>Catégorie</th>
                                 <th>Article</th>
                                 <th class="text-end">Valeur (Ar)</th>
-                                <th class="text-center">Niveau</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,15 +60,6 @@ foreach ($stocks as $s) {
                                 <td><span class="badge bg-success"><?php echo htmlspecialchars($stock['categorie_name'] ?? '-'); ?></span></td>
                                 <td><strong><?php echo htmlspecialchars($stock['article_name'] ?? '-'); ?></strong></td>
                                 <td class="text-end"><strong><?php echo number_format($qty, 2); ?> Ar</strong></td>
-                                <td class="text-center">
-                                    <span class="badge bg-<?php echo $niveau; ?>">
-                                        <?php 
-                                        if ($niveau === 'success') echo 'Bon';
-                                        elseif ($niveau === 'warning') echo 'Moyen';
-                                        else echo 'Faible';
-                                        ?>
-                                    </span>
-                                </td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
@@ -77,7 +67,6 @@ foreach ($stocks as $s) {
                             <tr>
                                 <th colspan="3" class="text-end">Total Argent</th>
                                 <th class="text-end"><?php echo number_format($totalQtyArgent, 2); ?> Ar</th>
-                                <th></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -109,7 +98,6 @@ foreach ($stocks as $s) {
                                 <th class="text-end">Prix unitaire</th>
                                 <th class="text-end">Quantité</th>
                                 <th class="text-end">Valeur</th>
-                                <th class="text-center">Niveau</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -127,15 +115,6 @@ foreach ($stocks as $s) {
                                 <td class="text-end"><?php echo number_format($stock['prix_unitaire'] ?? 0, 2, ',', ' '); ?></td>
                                 <td class="text-end"><?php echo number_format($qty); ?></td>
                                 <td class="text-end"><?php echo number_format($valeur, 0, ',', ' '); ?></td>
-                                <td class="text-center">
-                                    <span class="badge bg-<?php echo $niveau; ?>">
-                                        <?php 
-                                        if ($niveau === 'success') echo 'Bon';
-                                        elseif ($niveau === 'warning') echo 'Moyen';
-                                        else echo 'Faible';
-                                        ?>
-                                    </span>
-                                </td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
@@ -144,7 +123,6 @@ foreach ($stocks as $s) {
                                 <th colspan="4" class="text-end">Total</th>
                                 <th class="text-end"><?php echo number_format($totalQtyAutres); ?></th>
                                 <th class="text-end"><?php echo number_format($totalValAutres, 0, ',', ' '); ?></th>
-                                <th></th>
                             </tr>
                         </tfoot>
                     </table>

@@ -3,7 +3,7 @@
         <div class="col-12">
             <!-- En-tete -->
             <div class="mb-4">
-                <a href="/needs/restants" class="btn btn-sm btn-outline-secondary mb-3">
+                <a href="<?php echo BASE_PATH; ?>/needs/restants" class="btn btn-sm btn-outline-secondary mb-3">
                     <i class="bi bi-arrow-left"></i> Retour aux besoins restants
                 </a>
                 <h2 class="mb-1">
@@ -40,7 +40,8 @@
                             <i
                                 class="bi bi-piggy-bank fs-1 <?php echo ($solde_argent ?? 0) >= ($total_cout ?? 0) ? 'text-success' : 'text-danger'; ?>"></i>
                             <h5 class="mt-2 mb-0">
-                                <?php echo number_format(($solde_argent ?? 0) - ($total_cout ?? 0), 2); ?> MAD</h5>
+                                <?php echo number_format(($solde_argent ?? 0) - ($total_cout ?? 0), 2); ?> MAD
+                            </h5>
                             <small class="text-muted">Solde apres achats</small>
                         </div>
                     </div>
@@ -125,7 +126,8 @@
                                     <strong>Articles disponibles en stock</strong> - Choisissez entre distribuer le stock
                                     existant ou acheter de nouveaux articles
                                 </div>
-                                <a href="/autoDistribution?mode=simulate" class="btn btn-primary btn-sm">
+                                <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate"
+                                    class="btn btn-primary btn-sm">
                                     <i class="bi bi-lightning-fill me-2"></i>Distribuer tout le stock
                                 </a>
                             </div>
@@ -173,13 +175,13 @@
                                                     <?php endif; ?>
                                                 </td>
                                                 <td class="text-center">
-                                                    <a href="/autoDistribution?mode=simulate" class="btn btn-sm btn-primary"
-                                                        title="Distribuer le stock existant">
+                                                    <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate"
+                                                        class="btn btn-sm btn-primary" title="Distribuer le stock existant">
                                                         <i class="bi bi-truck"></i> Distribuer
                                                     </a>
                                                 </td>
                                                 <td class="text-center">
-                                                    <a href="/achats/form/<?php echo $item['besoin_id']; ?>"
+                                                    <a href="<?php echo BASE_PATH; ?>/achats/form/<?php echo $item['besoin_id']; ?>"
                                                         class="btn btn-sm btn-warning" title="Acheter de nouveaux articles">
                                                         <i class="bi bi-cart-plus"></i> Acheter
                                                     </a>
@@ -244,9 +246,10 @@
                                                 <td class="text-end text-danger"><?php echo number_format($achat['frais'], 2); ?>
                                                 </td>
                                                 <td class="text-end fw-bold">
-                                                    <?php echo number_format($achat['montant_total'], 2); ?></td>
+                                                    <?php echo number_format($achat['montant_total'], 2); ?>
+                                                </td>
                                                 <td class="text-center">
-                                                    <a href="/achats/form/<?php echo $achat['besoin_id']; ?>"
+                                                    <a href="<?php echo BASE_PATH; ?>/achats/form/<?php echo $achat['besoin_id']; ?>"
                                                         class="btn btn-sm btn-success" title="Acheter">
                                                         <i class="bi bi-cart-plus"></i>
                                                     </a>

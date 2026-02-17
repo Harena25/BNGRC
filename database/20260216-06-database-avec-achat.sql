@@ -452,12 +452,12 @@ INSERT INTO bn_dons (id, article_id, quantite_donnee, date_don) VALUES
 (100,10,20,'2026-02-16');
 
 -- Achats
-INSERT INTO bn_achats (ville_id, article_id, quantite, prix_unitaire, frais_pourcentage, prix_total, date_achat) VALUES
-(1, 1, 10, 35.00, 10, 385.00, '2026-02-10'),
-(2, 3, 5, 12.50, 10, 68.75, '2026-02-11'),
-(3, 5, 8, 25.00, 10, 220.00, '2026-02-12'),
-(5, 2, 20, 4.00, 10, 88.00, '2026-02-13'),
-(7, 10, 15, 15.00, 10, 247.50, '2026-02-14');
+-- INSERT INTO bn_achats (ville_id, article_id, quantite, prix_unitaire, frais_pourcentage, prix_total, date_achat) VALUES
+-- (1, 1, 10, 35.00, 10, 385.00, '2026-02-10'),
+-- (2, 3, 5, 12.50, 10, 68.75, '2026-02-11'),
+-- (3, 5, 8, 25.00, 10, 220.00, '2026-02-12'),
+-- (5, 2, 20, 4.00, 10, 88.00, '2026-02-13'),
+-- (7, 10, 15, 15.00, 10, 247.50, '2026-02-14');
 
 -- Exemples de distributions (pour tests)
 -- Note: Ces distributions ne sont pas réfléchies dans quantite des besoins

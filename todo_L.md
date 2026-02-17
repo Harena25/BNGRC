@@ -65,3 +65,10 @@
 - [x] Ajouter filtrage par ville (récap et liste des achats)
 - [x] Styliser la page avec Bootstrap et afficher messages flash/erreurs
 - [x] Mettre à jour `todo` avec mode d'emploi et notes d'implémentation
+
+--- version 3 ---
+
+Reinitialisation des donnees :
+    - [x] ajout du bouton de reinitialisation de donnees dans le dashboard
+    - [x] configuration du route
+    - [x] fonction de `resetData()`dans DashBoardController (juste appel du fichier)

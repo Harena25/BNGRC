@@ -345,7 +345,43 @@ INSERT INTO bn_besoin (ville_id, article_id, quantite, quantite_initiale, date_b
 -- Ordre 26: Farafangana, Bois
 (3, 7, 100, 100, '2026-02-15', 1, '2026-02-16 10:15:00');
 
--- Dons reçus (100 entrées)
+-- Dons reçus (d'après les données fournies)
+INSERT INTO bn_dons (article_id, quantite_donnee, date_don) VALUES
+-- Argent
+(8, 5000000, '2026-02-16'),
+(8, 3000000, '2026-02-16'),
+(8, 4000000, '2026-02-17'),
+(8, 1500000, '2026-02-17'),
+(8, 6000000, '2026-02-17'),
+(8, 20000000, '2026-02-19'),
+-- Riz (kg)
+(1, 400, '2026-02-16'),
+(1, 2000, '2026-02-18'),
+-- Eau (L)
+(2, 600, '2026-02-16'),
+(2, 5000, '2026-02-18'),
+-- Tôle
+(4, 50, '2026-02-17'),
+(4, 300, '2026-02-18'),
+-- Bâche
+(5, 70, '2026-02-17'),
+(5, 500, '2026-02-19'),
+-- Haricots
+(9, 100, '2026-02-17'),
+(9, 88, '2026-02-17');
+
+-- Stock initial (calculé à partir de la somme des dons)
+INSERT INTO bn_stock (article_id, quantite_stock) VALUES
+(1, 2400),      -- Riz (kg): 400 + 2000
+(2, 5600),      -- Eau (L): 600 + 5000
+(3, 0),         -- Huile (L): aucun don
+(4, 350),       -- Tôle: 50 + 300
+(5, 570),       -- Bâche: 70 + 500
+(6, 0),         -- Clous (kg): aucun don
+(7, 0),         -- Bois: aucun don
+(8, 39500000),  -- Argent: 5000000 + 3000000 + 4000000 + 1500000 + 6000000 + 20000000
+(9, 188),       -- Haricots: 100 + 88
+(10, 0);        -- Groupe: aucun don
 
 -- Exemples de distributions (pour tests)
 -- Note: Ces distributions ne sont pas réfléchies dans quantite des besoins

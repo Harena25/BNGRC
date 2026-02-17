@@ -285,18 +285,18 @@ INSERT INTO bn_article (id, libelle, categorie_id, prix_unitaire) VALUES
 (9,'Savon (lot 5)',4,2.50),
 (10,'Couverture',5,15.00);
 
--- Stock initial
+-- Stock initial (calculé à partir de la somme des dons)
 INSERT INTO bn_stock (id, article_id, quantite_stock) VALUES
-(1,1,200),
-(2,2,500),
-(3,3,150),
-(4,4,300),
-(5,5,80),
-(6,6,200),
-(7,7,120),
-(8,8,10000),
-(9,9,400),
-(10,10,180);
+(1,1,730),   -- Riz 50kg: 100+50+120+80+60+40+90+110+50+30
+(2,2,1200),  -- Riz 5kg: 200+80+150+110+140+60+130+170+90+70
+(3,3,350),   -- Huile 5L: 50+20+35+60+30+25+40+55+20+15
+(4,4,715),   -- Conserves: 120+40+70+50+90+110+60+95+45+35
+(5,5,208),   -- Tôle: 30+10+40+20+15+18+25+30+12+8
+(6,6,910),   -- Clous: 150+60+90+70+120+95+85+140+60+40
+(7,7,383),   -- Planche: 60+30+45+25+55+35+28+65+22+18
+(8,8,26200), -- Argent: 8000+2500+1000+1200+5000+3000+1500+2000+1100+900
+(9,9,1750),  -- Savon: 250+100+140+160+200+220+180+240+160+100
+(10,10,770); -- Couverture: 90+40+60+80+100+120+75+130+55+20
 
 -- Besoins (avec quantite_initiale = quantite car tous neufs)
 INSERT INTO bn_besoin (id, ville_id, article_id, quantite, quantite_initiale, date_besoin, status_id, created_at) VALUES

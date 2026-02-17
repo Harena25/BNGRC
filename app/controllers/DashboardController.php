@@ -102,7 +102,7 @@ class DashboardController
         $pdo = Flight::db();
         try {
             // Chemin vers le fichier SQL de réinitialisation
-            $sqlFile = __DIR__ . '/../../database/20260217-01-essaie-reinit.sql';
+            $sqlFile = __DIR__ . '/../../database/20260217-02-exam-data.sql';
 
             // Vérifier que le fichier existe
             if (!file_exists($sqlFile)) {

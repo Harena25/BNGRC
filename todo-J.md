@@ -529,32 +529,181 @@ Elements visuels:
     - Cartes colorees: Success/Warning/Danger selon contexte
     - Icones intuitives: wallet, cart, piggy-bank, box, lightning, etc.
 
-V-3 Ajout de quantite mode de distibution :
-    (par quantite on parle de quantite le plus petit d abord )
-    Dans AutoDistributor :
-    en mode simule : qui creer les sessions 
-    il y a la fonction getPendingBesoins();
-    Donc pour qu il soit parametrable : 
-    Service : AutoDistributor : fix : getPending($mode)
-        si mode = date  => requette SELECT * FROM bn_besoin 
-            WHERE status_id <> 3 
-            ORDER BY date_besoin ASC, created_at ASC(requette d avant )
-        si mode = qtt = > requette SELECT * FROM bn_besoin 
-            WHERE status_id <> 3
-            ORDER BY quantite DESC (plus petit)
+================================================================================
+[OK] V-3. Mode de Distribution par Quantite (Plus Petit d'abord)
+================================================================================
+
+Description:
+    Distribution automatique privilegiant les besoins de plus petite quantite
+    pour maximiser le nombre de beneficiaires satisfaits.
+
+Principe:
+    Traiter les besoins du plus petit au plus grand (ORDER BY quantite ASC)
+    au lieu de l'ordre chronologique par defaut.
+
+Implementation:
+    [OK] Service: AutoDistributor
+        - Ajout propriete $sortMode ('date' ou 'quantite')
+        - Modification constructeur: __construct(PDO $pdo, string $sortMode = 'date')
+        - Modification getPendingBesoins():
+            * si sortMode = 'date': ORDER BY date_besoin ASC, created_at ASC
+            * si sortMode = 'quantite': ORDER BY quantite ASC, created_at ASC
     
-
-    simulate aurais donc un tableau de besoin filtrer par quntite plus petit 
-
-    Controller: DistriButionController=> ajoute un paramaetre mode comme attribut et de le passer dans service
-
-    view : 
-        dans dasboard et distribution list.php 
-        ajouter une autre bouton :
+    [OK] Controller: DistributionController::autoDistribution()
+        - Recuperer parametre sortMode depuis $_GET['sortMode'] (default: 'date')
+        - Passer sortMode au constructeur AutoDistributor
+        - Stocker sortMode en session pour affichage resultat
     
+    [OK] Views:
+        - dashboard/index.php: 2 boutons (Par Date / Par Quantite)
+        - distribution/list.php: 2 boutons (Par Date / Par Quantite)
+        - distribution/result.php: Badge affichant le mode utilise
 
+Routes:
+    GET /autoDistribution?mode=simulate&sortMode=date
+    GET /autoDistribution?mode=simulate&sortMode=quantite
+    GET /autoDistribution?mode=execute&sortMode=date
+    GET /autoDistribution?mode=execute&sortMode=quantite
 
+Tests:
+    [A TESTER] Distribution par date: besoins tries chronologiquement
+    [A TESTER] Distribution par quantite: petits besoins traites en priorite
+    [A TESTER] Conservation du mode lors validation (simulate -> execute)
 
+================================================================================
+[ ] V-4. Mode de Distribution Proportionnelle
+================================================================================
+
+Description:
+    Distribution equitable ou chaque beneficiaire recoit une part proportionnelle
+    a sa demande, en fonction du stock disponible.
+
+Principe:
+    Pour chaque article en stock:
+    1. Recuperer TOUS les besoins non satisfaits pour cet article
+    2. Calculer le total des demandes
+    3. Distribuer proportionnellement: (Demande / Total demandes) × Stock disponible
+    4. Arrondir a l'entier inferieur (floor) pour ne pas depasser le stock
+    5. Creer les distributions et mettre a jour les besoins
+
+Formule:
+    Quantite distribuee = floor((Quantite demandee / Total demandes) × Stock disponible)
+
+Exemple:
+    Stock disponible: 5 unites
+    Demandes: Ville A (1), Ville B (3), Ville C (5)
+    Total demandes: 9
+    
+    Calcul:
+    - Ville A: floor((1/9) × 5) = floor(0.55) = 0
+    - Ville B: floor((3/9) × 5) = floor(1.66) = 1
+    - Ville C: floor((5/9) × 5) = floor(2.77) = 2
+    Total distribue: 3 unites (reste 2 en stock)
+
+Regles:
+    - Arrondi inferieur (floor) pour garantir stock suffisant
+    - Traiter article par article (grouper besoins par article_id)
+    - Ignorer besoins deja satisfaits (status_id = 3)
+    - Mettre a jour status_id selon quantite restante:
+        * status_id = 3 si quantite devient 0 (satisfait)
+        * status_id = 2 si quantite > 0 (partiel)
+
+Implementation:
+    [ ] Service: AutoDistributor
+        - Ajouter methode runProportional(): array
+            1. Recuperer tous les stocks (article_id, quantite_stock)
+            2. Pour chaque stock avec quantite > 0:
+                a. SELECT besoins WHERE article_id = X AND status_id <> 3
+                b. Calculer total demandes: SUM(quantite)
+                c. Pour chaque besoin:
+                    - ratio = quantite_besoin / total_demandes
+                    - qte_dist = floor(ratio × stock_disponible)
+                    - Si qte_dist > 0:
+                        * INSERT bn_distribution
+                        * UPDATE bn_besoin SET quantite = quantite - qte_dist
+                        * UPDATE bn_stock SET quantite_stock = quantite_stock - qte_dist
+                        * UPDATE status_id selon quantite restante
+            3. Logger les operations
+            4. Return log
+        
+        - Ajouter methode simulateProportional(): array
+            1. Meme logique que runProportional()
+            2. Travailler sur copie memoire (pas de modifications DB)
+            3. Return log simulation
+        
+        - Modifier run() et simulate():
+            if ($this->sortMode === 'proportionnelle') {
+                return $this->runProportional(); // ou simulateProportional()
+            } else {
+                // logique existante (date ou quantite)
+            }
+    
+    [ ] Controller: DistributionController::autoDistribution()
+        - Supporter sortMode = 'proportionnelle'
+        - Passer a AutoDistributor normalement
+        - Gestion identique aux autres modes
+    
+    [ ] Views:
+        - dashboard/index.php: Ajouter bouton "Par Proportionnalite"
+        - distribution/list.php: Ajouter bouton "Par Proportionnalite"
+        - distribution/result.php: Badge "Distribution Proportionnelle"
+
+Routes:
+    GET /autoDistribution?mode=simulate&sortMode=proportionnelle
+    GET /autoDistribution?mode=execute&sortMode=proportionnelle
+
+Code SQL cle:
+    -- Recuperer besoins par article
+    SELECT id, ville_id, quantite 
+    FROM bn_besoin 
+    WHERE article_id = ? AND status_id <> 3
+    
+    -- Creer distribution
+    INSERT INTO bn_distribution (besoin_id, article_id, quantite_distribuee, date_distribution)
+    VALUES (?, ?, ?, CURDATE())
+    
+    -- Reduire besoin
+    UPDATE bn_besoin 
+    SET quantite = quantite - ?, 
+        status_id = CASE WHEN (quantite - ?) = 0 THEN 3 ELSE 2 END
+    WHERE id = ?
+    
+    -- Reduire stock
+    UPDATE bn_stock 
+    SET quantite_stock = quantite_stock - ?
+    WHERE article_id = ?
+
+Gestion des arrondis:
+    - Utiliser floor() pour arrondir a l'entier inferieur
+    - Exemple PHP: $qte_dist = floor($ratio * $stock);
+    - Garantit: SUM(distributions) <= stock_disponible
+
+Avantages:
+    - Equite: tous les beneficiaires recoivent une part
+    - Evite la frustration du "premier arrivé, premier servi"
+    - Optimise satisfaction globale
+    - Transparent et comprehensible
+
+Cas limites:
+    - Si ratio trop faible: certains recoivent 0 (arrondi inferieur)
+    - Stock restant apres distribution (du aux arrondis)
+    - Gerer besoins deja partiellement satisfaits
+
+Tests:
+    [ ] Cas 1: Stock suffisant pour tous (chacun recoit sa demande complete)
+    [ ] Cas 2: Stock insuffisant (distribution proportionnelle)
+    [ ] Cas 3: Demandes tres inegales (1 vs 100)
+    [ ] Cas 4: Arrondis inferieurs donnant 0 pour petites demandes
+    [ ] Cas 5: Verification stock final (ne doit pas etre negatif)
+    [ ] Cas 6: Multiple articles simultanement
+
+Logs attendus:
+    "Distribution proportionnelle pour Article X (stock: 5)"
+    "Total demandes: 9 unites"
+    "Ville A: 0 distribue (1 demande, ratio 11%)"
+    "Ville B: 1 distribue (3 demande, ratio 33%)"
+    "Ville C: 2 distribue (5 demande, ratio 55%)"
+    "Stock restant: 2 unites"
 
 ================================================================================
 FIN DU TODO

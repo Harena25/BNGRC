@@ -22,6 +22,8 @@ Flight::route('/', function () {
 // Dashboard
 Flight::route('GET /dashboard', ['DashboardController', 'index']);
 
+Flight::route('GET /dashboard/resetData', ['DashboardController', 'ResetData']);
+
 Flight::route('GET /needs', function () {
     $ctrl = new BesoinsController(Flight::db());
     return $ctrl->index();

@@ -3,6 +3,23 @@
 ?>
 
 <?php
+// Show reset data message if just ran
+if (isset($_SESSION['reset_success'])):
+    $isSuccess = $_SESSION['reset_success'];
+    $message = $_SESSION['reset_message'] ?? '';
+    unset($_SESSION['reset_success'], $_SESSION['reset_message']);
+    ?>
+    <div class="alert alert-<?php echo $isSuccess ? 'success' : 'danger'; ?> alert-dismissible fade show mb-4" role="alert">
+        <h5 class="alert-heading">
+            <i class="bi bi-<?php echo $isSuccess ? 'check-circle-fill' : 'exclamation-triangle-fill'; ?> me-2"></i>
+            <?php echo $isSuccess ? 'Réinitialisation réussie' : 'Erreur de réinitialisation'; ?>
+        </h5>
+        <p class="mb-0"><?php echo htmlspecialchars($message); ?></p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<?php
 // Show allocation result if just ran
 if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SESSION['allocation_log'])):
     $log = $_SESSION['allocation_log'];
@@ -19,6 +36,12 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 <?php endif; ?>
+
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-0">Tableau de bord</h1>
+    </div>
+</div>
 
 <!-- ═══ STATS CARDS ═══ -->
 <div class="row g-3 mb-4">
@@ -82,6 +105,10 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <span><i class="bi bi-bar-chart-fill me-2"></i>Tableau de bord par ville</span>
+        <a href="<?= BASE_PATH ?>/dashboard/resetData" class="btn btn-sm btn-light">
+            <i class="bi bi-arrow-clockwise"></i>
+            Réinitialiser données
+        </a>
         <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate" class="btn btn-sm btn-light">
             <i class="bi bi-lightning-fill"></i> Lancer allocation
         </a>

@@ -4,6 +4,7 @@ $totalSatisfied = $summary['satisfied'] ?? 0;
 $totalPartial = $summary['partial'] ?? 0;
 $totalSkipped = $summary['skipped'] ?? 0;
 $totalProcessed = $totalSatisfied + $totalPartial + $totalSkipped;
+$sortModeLabel = ($sortMode ?? 'date') === 'quantite' ? 'Par Quantité (du plus petit au plus grand)' : 'Par Date (ordre chronologique)';
 ?>
 
 <div class="container py-4" style="max-width: 900px;">
@@ -15,6 +16,10 @@ $totalProcessed = $totalSatisfied + $totalPartial + $totalSkipped;
         </div>
         <h2 class="mb-1">Allocation automatique terminée</h2>
         <p class="text-muted">Voici le détail des opérations effectuées</p>
+        <span class="badge bg-info">
+            <i class="bi bi-<?php echo $sortMode === 'quantite' ? 'sort-numeric-up' : 'calendar-event'; ?> me-1"></i>
+            <?php echo $sortModeLabel; ?>
+        </span>
     </div>
 
     <!-- Summary Cards -->
@@ -131,7 +136,7 @@ $totalProcessed = $totalSatisfied + $totalPartial + $totalSkipped;
             <a href="<?php echo BASE_PATH; ?>/dashboard" class="btn btn-outline-secondary btn-lg">
                 <i class="bi bi-x-circle me-2"></i>Annuler
             </a>
-            <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=execute" class="btn btn-success btn-lg"
+            <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=execute&sortMode=<?php echo $sortMode ?? 'date'; ?>" class="btn btn-success btn-lg"
                 onclick="return confirm('Confirmer l execution de la distribution automatique ?\n\nCette action va modifier la base de donnees.')">
                 <i class="bi bi-check-circle-fill me-2"></i>Valider la distribution
             </a>

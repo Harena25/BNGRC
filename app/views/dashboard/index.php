@@ -82,9 +82,14 @@ if (isset($_GET['allocation']) && $_GET['allocation'] === 'done' && !empty($_SES
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <span><i class="bi bi-bar-chart-fill me-2"></i>Tableau de bord par ville</span>
-        <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate" class="btn btn-sm btn-light">
-            <i class="bi bi-lightning-fill"></i> Lancer allocation
-        </a>
+        <div class="btn-group" role="group">
+            <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=date" class="btn btn-sm btn-light">
+                <i class="bi bi-calendar-event"></i> Par Date
+            </a>
+            <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=quantite" class="btn btn-sm btn-warning">
+                <i class="bi bi-sort-numeric-up"></i> Par Quantité
+            </a>
+        </div>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

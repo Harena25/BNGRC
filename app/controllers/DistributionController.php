@@ -8,9 +8,14 @@ class DistributionController{
      */
     public function autoDistribution(){
         $pdo = Flight::db();
-        $distributor = new AutoDistributor($pdo);
         
-        // Get mode from query parameter (default: simulate)
+        // Get sort mode from query parameter (default: date)
+        // Options: 'date' (chronological) or 'quantite' (smallest first)
+        $sortMode = $_GET['sortMode'] ?? 'date';
+        
+        $distributor = new AutoDistributor($pdo, $sortMode);
+        
+        // Get execution mode from query parameter (default: simulate)
         $mode = $_GET['mode'] ?? 'simulate';
         
         // Run simulation or execution
@@ -42,6 +47,7 @@ class DistributionController{
         $_SESSION['allocation_summary'] = $summary;
         $_SESSION['allocation_time'] = date('Y-m-d H:i:s');
         $_SESSION['allocation_mode'] = $mode;
+        $_SESSION['allocation_sort_mode'] = $sortMode;
         
         // Redirect to result page
         Flight::redirect('/distribution/result');
@@ -65,10 +71,11 @@ class DistributionController{
         $log = $_SESSION['allocation_log'];
         $summary = $_SESSION['allocation_summary'] ?? ['satisfied' => 0, 'partial' => 0, 'skipped' => 0];
         $mode = $_SESSION['allocation_mode'] ?? 'simulate';
+        $sortMode = $_SESSION['allocation_sort_mode'] ?? 'date';
         
         // Clear session data only if execution completed
         if ($mode === 'execute') {
-            unset($_SESSION['allocation_log'], $_SESSION['allocation_summary'], $_SESSION['allocation_time'], $_SESSION['allocation_mode']);
+            unset($_SESSION['allocation_log'], $_SESSION['allocation_summary'], $_SESSION['allocation_time'], $_SESSION['allocation_mode'], $_SESSION['allocation_sort_mode']);
         }
         
         $pagename = 'distribution/result.php';
@@ -76,6 +83,7 @@ class DistributionController{
             'log' => $log,
             'summary' => $summary,
             'mode' => $mode,
+            'sortMode' => $sortMode,
             'pagename' => $pagename
         ]);
     }

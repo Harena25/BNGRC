@@ -5,9 +5,14 @@ $stats = $stats ?? ['total' => 0, 'quantite' => 0, 'valeur' => 0];
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0"><i class="bi bi-clock-history me-2"></i>Historique des distributions</h2>
-    <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate" class="btn btn-primary">
-        <i class="bi bi-play-fill me-1"></i>Nouvelle allocation
-    </a>
+    <div class="btn-group" role="group">
+        <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=date" class="btn btn-primary">
+            <i class="bi bi-calendar-event me-1"></i>Par Date
+        </a>
+        <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=quantite" class="btn btn-warning">
+            <i class="bi bi-sort-numeric-up me-1"></i>Par Quantité
+        </a>
+    </div>
 </div>
 
 <!-- Stats Cards -->

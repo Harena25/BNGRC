@@ -24,3 +24,9 @@
 - Saisie et liste des achats filtrables par ville  [H]
 - Page de simulation (boutons simuler et validation) [J]
 - Page de récapitulation (actualisable en Ajax) [L]
+
+V3 - creer trois modes de distribution 
+    => par date et par quantite 
+    cette fonctionnlaite sera fait en paralelle par nous trois 
+    on procedera a une epreuves democratique et celui qui obtiendra le plus de vote 
+    a l honeur de commit et de le merge dans main 

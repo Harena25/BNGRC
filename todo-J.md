@@ -529,6 +529,33 @@ Elements visuels:
     - Cartes colorees: Success/Warning/Danger selon contexte
     - Icones intuitives: wallet, cart, piggy-bank, box, lightning, etc.
 
+V-3 Ajout de quantite mode de distibution :
+    (par quantite on parle de quantite le plus petit d abord )
+    Dans AutoDistributor :
+    en mode simule : qui creer les sessions 
+    il y a la fonction getPendingBesoins();
+    Donc pour qu il soit parametrable : 
+    Service : AutoDistributor : fix : getPending($mode)
+        si mode = date  => requette SELECT * FROM bn_besoin 
+            WHERE status_id <> 3 
+            ORDER BY date_besoin ASC, created_at ASC(requette d avant )
+        si mode = qtt = > requette SELECT * FROM bn_besoin 
+            WHERE status_id <> 3
+            ORDER BY quantite DESC (plus petit)
+    
+
+    simulate aurais donc un tableau de besoin filtrer par quntite plus petit 
+
+    Controller: DistriButionController=> ajoute un paramaetre mode comme attribut et de le passer dans service
+
+    view : 
+        dans dasboard et distribution list.php 
+        ajouter une autre bouton :
+    
+
+
+
+
 ================================================================================
 FIN DU TODO
 ================================================================================ 

@@ -1,9 +1,11 @@
 <?php
 class AutoDistributor {
     private $pdo;
+    private $sortMode; // 'date' ou 'quantite'
 
-    public function __construct(PDO $pdo) {
+    public function __construct(PDO $pdo, string $sortMode = 'date') {
         $this->pdo = $pdo;
+        $this->sortMode = $sortMode;
     }
 
     // Public entry: run the simple distribution
@@ -84,7 +86,14 @@ class AutoDistributor {
 
     // Small helper: fetch pending besoins ordered
     private function getPendingBesoins(): array {
-        $sql = "SELECT * FROM bn_besoin WHERE status_id <> 3 ORDER BY date_besoin ASC, created_at ASC";
+        // Choisir l'ordre selon le mode de distribution
+        if ($this->sortMode === 'quantite') {
+            // Mode quantité : du plus petit besoin au plus grand
+            $sql = "SELECT * FROM bn_besoin WHERE status_id <> 3 ORDER BY quantite ASC, created_at ASC";
+        } else {
+            // Mode date : ordre chronologique (par défaut)
+            $sql = "SELECT * FROM bn_besoin WHERE status_id <> 3 ORDER BY date_besoin ASC, created_at ASC";
+        }
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -63,21 +63,16 @@ class AchatsRepository
     
     public function getSoldeArgent(): float
     {
-        // Utiliser le stock actuel d'aide financière (article_id = 8)
-        // qui tient compte des dons, distributions et achats
-        $sql = "SELECT COALESCE(quantite_stock, 0) AS solde 
-                FROM bn_stock 
-                WHERE article_id = 8";
+        // Somme du stock de tous les articles de catégorie "Argent" (categorie_id = 3)
+        $sql = "SELECT COALESCE(SUM(s.quantite_stock), 0) AS solde 
+                FROM bn_stock s
+                JOIN bn_article a ON a.id = s.article_id
+                WHERE a.categorie_id = 3";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch();
         
-        if ($result) {
-            return (float) $result['solde'];
-        }
-        
-        // Si pas de stock d'argent, retourner 0
-        return 0.0;
+        return $result ? (float) $result['solde'] : 0.0;
     }
 
     /**

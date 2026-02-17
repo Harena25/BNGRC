@@ -7,12 +7,13 @@ $totalProcessed = $totalSatisfied + $totalPartial + $totalSkipped;
 
 // Déterminer le libellé et l'icône selon le mode
 $currentSortMode = $sortMode ?? 'date';
+$currentTour = $tour ?? 1;
 if ($currentSortMode === 'quantite') {
     $sortModeLabel = 'Par Quantité (du plus petit au plus grand)';
     $sortModeIcon = 'sort-numeric-up';
     $badgeClass = 'bg-warning';
 } elseif ($currentSortMode === 'proportionnelle') {
-    $sortModeLabel = 'Distribution Proportionnelle (équitable)';
+    $sortModeLabel = 'Distribution Proportionnelle (équitable) - Tour ' . $currentTour;
     $sortModeIcon = 'pie-chart';
     $badgeClass = 'bg-success';
 } else {
@@ -36,6 +37,16 @@ if ($currentSortMode === 'quantite') {
             <?php echo $sortModeLabel; ?>
         </span>
     </div>
+
+    <!-- Info sur le 2ème tour (si tour 2) -->
+    <?php if ($currentSortMode === 'proportionnelle' && $currentTour == 2): ?>
+        <div class="alert alert-info mb-4" role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            <strong>2ème tour activé :</strong> Après la distribution proportionnelle du 1er tour (arrondi inférieur),
+            le stock restant est distribué une unité à la fois aux besoins ayant les plus grandes parties décimales.
+            Cela permet de distribuer la totalité du stock disponible de manière équitable.
+        </div>
+    <?php endif; ?>
 
     <!-- Summary Cards -->
     <div class="row g-3 mb-4">
@@ -79,13 +90,13 @@ if ($currentSortMode === 'quantite') {
                 <h6 class="mb-3"><i class="bi bi-bar-chart me-2"></i>Répartition des résultats</h6>
                 <div class="progress" style="height: 30px;">
                     <div class="progress-bar bg-success" style="width: <?php echo $pctSatisfied; ?>%;" title="Satisfaits">
-                        <?php if ($pctSatisfied > 10): ?>        <?php echo $pctSatisfied; ?>%<?php endif; ?>
+                        <?php if ($pctSatisfied > 10): ?>         <?php echo $pctSatisfied; ?>%<?php endif; ?>
                     </div>
                     <div class="progress-bar bg-warning" style="width: <?php echo $pctPartial; ?>%;" title="Partiels">
-                        <?php if ($pctPartial > 10): ?>        <?php echo $pctPartial; ?>%<?php endif; ?>
+                        <?php if ($pctPartial > 10): ?>         <?php echo $pctPartial; ?>%<?php endif; ?>
                     </div>
                     <div class="progress-bar bg-danger" style="width: <?php echo $pctSkipped; ?>%;" title="Sans stock">
-                        <?php if ($pctSkipped > 10): ?>        <?php echo $pctSkipped; ?>%<?php endif; ?>
+                        <?php if ($pctSkipped > 10): ?>         <?php echo $pctSkipped; ?>%<?php endif; ?>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between mt-2 small text-muted">
@@ -145,15 +156,29 @@ if ($currentSortMode === 'quantite') {
         <div class="alert alert-warning mb-4" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             <strong>Mode simulation:</strong> Aucune modification n'a ete effectuee dans la base de donnees.
-            Cliquez sur <strong>Valider</strong> pour executer reellement la distribution.
+            <?php if ($currentSortMode === 'proportionnelle' && $currentTour == 1): ?>
+                <br><strong>Note:</strong> Vous pouvez voir le résultat avec un 2ème tour de distribution ci-dessous.
+            <?php endif; ?>
         </div>
-        <div class="d-flex justify-content-center gap-3">
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
             <a href="<?php echo BASE_PATH; ?>/dashboard" class="btn btn-outline-secondary btn-lg">
                 <i class="bi bi-x-circle me-2"></i>Annuler
             </a>
-            <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=execute&sortMode=<?php echo $sortMode ?? 'date'; ?>" class="btn btn-success btn-lg"
-                onclick="return confirm('Confirmer l execution de la distribution automatique ?\n\nCette action va modifier la base de donnees.')">
-                <i class="bi bi-check-circle-fill me-2"></i>Valider la distribution
+
+            <?php if ($currentSortMode === 'proportionnelle' && $currentTour == 1): ?>
+                <!-- Bouton pour voir le 2ème tour -->
+                <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=simulate&sortMode=proportionnelle&tour=2"
+                    class="btn btn-info btn-lg">
+                    <i class="bi bi-arrow-repeat me-2"></i>Voir avec 2ème tour
+                </a>
+            <?php endif; ?>
+
+            <a href="<?php echo BASE_PATH; ?>/autoDistribution?mode=execute&sortMode=<?php echo $sortMode ?? 'date'; ?>&tour=<?php echo $currentTour; ?>"
+                class="btn btn-success btn-lg"
+                onclick="return confirm('Confirmer l execution de la distribution automatique <?php echo ($currentSortMode === 'proportionnelle' ? '(Tour ' . $currentTour . ')' : ''); ?> ?\n\nCette action va modifier la base de donnees.')">
+                <i class="bi bi-check-circle-fill me-2"></i>Valider
+                <?php echo ($currentSortMode === 'proportionnelle' ? 'ce tour' : 'la distribution'); ?>
             </a>
         </div>
     <?php else: ?>

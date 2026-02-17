@@ -19,7 +19,7 @@
                     <div class="card shadow-sm border-success">
                         <div class="card-body text-center">
                             <i class="bi bi-wallet2 fs-1 text-success"></i>
-                            <h5 class="mt-2 mb-0"><?php echo number_format($solde_argent ?? 0, 2); ?> MAD</h5>
+                            <h5 class="mt-2 mb-0"><?php echo number_format($solde_argent ?? 0, 2); ?> Ar</h5>
                             <small class="text-muted">Solde argent disponible</small>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                     <div class="card shadow-sm border-warning">
                         <div class="card-body text-center">
                             <i class="bi bi-cart-check fs-1 text-warning"></i>
-                            <h5 class="mt-2 mb-0"><?php echo number_format($total_cout ?? 0, 2); ?> MAD</h5>
+                            <h5 class="mt-2 mb-0"><?php echo number_format($total_cout ?? 0, 2); ?> Ar</h5>
                             <small class="text-muted">Cout total des achats</small>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                             <i
                                 class="bi bi-piggy-bank fs-1 <?php echo ($solde_argent ?? 0) >= ($total_cout ?? 0) ? 'text-success' : 'text-danger'; ?>"></i>
                             <h5 class="mt-2 mb-0">
-                                <?php echo number_format(($solde_argent ?? 0) - ($total_cout ?? 0), 2); ?> MAD
+                                <?php echo number_format(($solde_argent ?? 0) - ($total_cout ?? 0), 2); ?> Ar
                             </h5>
                             <small class="text-muted">Solde apres achats</small>
                         </div>
@@ -261,7 +261,7 @@
                                         <tr>
                                             <td colspan="8" class="text-end fw-bold">TOTAL GENERAL:</td>
                                             <td class="text-end fw-bold fs-5"><?php echo number_format($total_cout ?? 0, 2); ?>
-                                                MAD</td>
+                                                Ar</td>
                                             <td></td>
                                         </tr>
                                     </tfoot>

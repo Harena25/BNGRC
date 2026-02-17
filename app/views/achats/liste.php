@@ -6,7 +6,7 @@
                 <h2 class="mb-0"><i class="bi bi-cart3"></i> Liste des achats</h2>
                 <div>
                     <span class="badge bg-success fs-6 me-2">
-                        Solde argent : <?php echo number_format($solde ?? 0, 2); ?> MAD
+                        Solde argent : <?php echo number_format($solde ?? 0, 2); ?> Ar
                     </span>
                     <a href="<?php echo BASE_PATH; ?>/needs/restants" class="btn btn-primary">
                         <i class="bi bi-cart-plus"></i> Nouvel achat
@@ -99,13 +99,13 @@
                                                 </span>
                                             </td>
                                             <td class="text-end">
-                                                <?php echo number_format($a['prix_unitaire'], 2); ?> MAD
+                                                <?php echo number_format($a['prix_unitaire'], 2); ?> Ar
                                             </td>
                                             <td class="text-end">
                                                 <?php echo number_format($a['frais_pourcentage'], 1); ?>%
                                             </td>
                                             <td class="text-end">
-                                                <strong><?php echo number_format($a['prix_total'], 2); ?> MAD</strong>
+                                                <strong><?php echo number_format($a['prix_total'], 2); ?> Ar</strong>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -113,7 +113,7 @@
                                 <tfoot class="table-secondary">
                                     <tr>
                                         <td colspan="9" class="text-end fw-bold">Total des achats :</td>
-                                        <td class="text-end fw-bold"><?php echo number_format($totalGeneral, 2); ?> MAD</td>
+                                        <td class="text-end fw-bold"><?php echo number_format($totalGeneral, 2); ?> Ar</td>
                                     </tr>
                                 </tfoot>
                             </table>

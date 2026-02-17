@@ -44,12 +44,18 @@ class StockRepository
     }
 
     /**
-     * Recuperer le solde argent (article_id = 8)
+     * Recuperer le solde argent total (tous les articles de categorie_id = 3)
      */
     public function getSoldeArgent()
     {
-        $stock = $this->findByArticleId(8);
-        return $stock ? (int) $stock['quantite_stock'] : 0;
+        $sql = "SELECT COALESCE(SUM(s.quantite_stock), 0) AS total_argent
+                FROM bn_stock s
+                JOIN bn_article a ON a.id = s.article_id
+                WHERE a.categorie_id = 3";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? (float) $result['total_argent'] : 0.0;
     }
 
     /**

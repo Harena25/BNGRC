@@ -230,13 +230,13 @@ class AutoDistributor {
                         $qte_restante = $qte_demandee - $qte_distribuee;
                         if ($qte_restante <= 0) {
                             $this->markBesoinSatisfied($besoin_id);
-                            $log[] = "  Besoin #{$besoin_id}: {$qte_distribuee} distribué (satisfait totalement, ratio " . round($ratio * 100, 1) . "%)";
+                            $log[] = "  Besoin #{$besoin_id} (demande: {$qte_demandee}): {$qte_distribuee} distribué (satisfait totalement, ratio " . round($ratio * 100, 1) . "%)";
                         } else {
                             $this->reduceBesoin($besoin_id, $qte_restante);
-                            $log[] = "  Besoin #{$besoin_id}: {$qte_distribuee} distribué, reste {$qte_restante} (ratio " . round($ratio * 100, 1) . "%)";
+                            $log[] = "  Besoin #{$besoin_id} (demande: {$qte_demandee}): {$qte_distribuee} distribué, reste {$qte_restante} (ratio " . round($ratio * 100, 1) . "%)";
                         }
                     } else {
-                        $log[] = "  Besoin #{$besoin_id}: 0 distribué (demande {$qte_demandee}, ratio " . round($ratio * 100, 1) . "% trop faible)";
+                        $log[] = "  Besoin #{$besoin_id} (demande: {$qte_demandee}): 0 distribué (ratio " . round($ratio * 100, 1) . "% trop faible)";
                     }
                 }
                 
@@ -307,12 +307,12 @@ class AutoDistributor {
                         $qte_restante = $qte_demandee - $qte_distribuee;
                         
                         if ($qte_restante <= 0) {
-                            $log[] = "  Besoin #{$besoin_id}: {$qte_distribuee} distribué (satisfait totalement, ratio " . round($ratio * 100, 1) . "%)";
+                            $log[] = "  Besoin #{$besoin_id} (demande: {$qte_demandee}): {$qte_distribuee} distribué (satisfait totalement, ratio " . round($ratio * 100, 1) . "%)";
                         } else {
-                            $log[] = "  Besoin #{$besoin_id}: {$qte_distribuee} distribué, reste {$qte_restante} (ratio " . round($ratio * 100, 1) . "%)";
+                            $log[] = "  Besoin #{$besoin_id} (demande: {$qte_demandee}): {$qte_distribuee} distribué, reste {$qte_restante} (ratio " . round($ratio * 100, 1) . "%)";
                         }
                     } else {
-                        $log[] = "  Besoin #{$besoin_id}: 0 distribué (demande {$qte_demandee}, ratio " . round($ratio * 100, 1) . "% trop faible)";
+                        $log[] = "  Besoin #{$besoin_id} (demande: {$qte_demandee}): 0 distribué (ratio " . round($ratio * 100, 1) . "% trop faible)";
                     }
                 }
                 

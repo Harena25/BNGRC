@@ -48,7 +48,6 @@
                                         <th>Prix unitaire</th>
                                         <th>Valeur totale</th>
                                         <th>Date</th>
-                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -78,28 +77,6 @@
                                                 </strong>
                                             </td>
                                             <td><?php echo date('d/m/Y', strtotime($don['date_don'])); ?></td>
-                                            <td class="text-center">
-                                                <div class="btn-group btn-group-sm" role="group">
-                                                    <!-- Bouton Modifier -->
-                                                    <a href="<?php echo BASE_PATH; ?>/dons/<?php echo $don['id']; ?>/edit"
-                                                        class="btn btn-outline-primary" title="Modifier">
-                                                        <!-- <i class="bi bi-pencil"></i> -->
-                                                        Modifer
-                                                    </a>
-
-                                                    <!-- Bouton Supprimer -->
-                                                    <form method="POST"
-                                                        action="<?php echo BASE_PATH; ?>/dons/<?php echo $don['id']; ?>/delete"
-                                                        style="display: inline;"
-                                                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce don ?');">
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                            title="Supprimer">
-                                                            <!-- <i class="bi bi-trash"></i> -->
-                                                            Supprimer
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

@@ -1,3 +1,27 @@
+<?php if (isset($besoin['categorie_id']) && $besoin['categorie_id'] == 3): ?>
+<!-- Message pour la categorie Argent -->
+<div class="container mt-4" style="max-width: 800px;">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-4">
+                <a href="<?php echo BASE_PATH; ?>/needs/restants" class="btn btn-sm btn-outline-secondary mb-3">
+                    <i class="bi bi-arrow-left"></i> Retour aux besoins restants
+                </a>
+            </div>
+            
+            <div class="alert alert-danger shadow-sm" role="alert">
+                <h4 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Operation bloquee!
+                </h4>
+                <hr>
+                <p class="mb-0 fs-5">
+                    On ne peut pas acheter de l'argent avec interet compris !
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<?php else: ?>
 <div class="container mt-4" style="max-width: 800px;" data-achat-form data-base-path="<?php echo BASE_PATH; ?>" data-stock-disponible="<?php echo $stock_info['quantite_stock'] ?? 0; ?>">
     <div class="row">
         <div class="col-12">
@@ -215,3 +239,4 @@
 
 <!-- Script externe pour la gestion du formulaire d'achat -->
 <script src="<?php echo BASE_PATH; ?>/assets/js/achat-form.js"></script>
+<?php endif; ?>

@@ -39,7 +39,7 @@ class AchatController
         $sql = "
             SELECT b.id, b.ville_id, v.libelle AS ville, r.libelle AS region,
                    b.article_id, a.libelle AS article, a.prix_unitaire,
-                   c.libelle AS categorie,
+                   c.id AS categorie_id, c.libelle AS categorie,
                    b.quantite, b.quantite_initiale, b.date_besoin,
                    b.status_id, s.libelle AS status
             FROM bn_besoin b

@@ -66,7 +66,7 @@
               <thead class="table-light">
                 <tr>
                   <th>Type</th>
-                  <th class="text-end">Montant (MAD)</th>
+                  <th class="text-end">Montant (Ar)</th>
                   <th class="text-end">Pourcentage</th>
                 </tr>
               </thead>
@@ -124,7 +124,7 @@
       new Intl.NumberFormat("fr-FR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      }).format(num) + " MAD"
+      }).format(num) + " Ar"
     );
   }
 

@@ -53,7 +53,7 @@
                         <div class="text-center py-5">
                             <i class="bi bi-cart-x" style="font-size: 3rem; color: #ccc;"></i>
                             <p class="text-muted mt-3">Aucun achat enregistré pour le moment.</p>
-                            <a href="<?php echo BASE_PATH; ?>/purchases" class="btn btn-primary mt-2">
+                            <a href="<?php echo BASE_PATH; ?>/needs/restants" class="btn btn-primary mt-2">
                                 <i class="bi bi-cart-plus"></i> Effectuer le premier achat
                             </a>
                         </div>
